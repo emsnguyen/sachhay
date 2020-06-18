@@ -18,7 +18,7 @@ class BookController extends Controller
     {
         $books = Book::all();
         // get image from book image table
-        return view('welcome')->with('books', $books);
+        return view('dashboard/books')->with('books', $books);
     }
 
     /**
@@ -62,7 +62,7 @@ class BookController extends Controller
             $bookImage->image_id = $image->id;
             $bookImage->save();
         }
-        return view('dashboard/bookDetail', compact('book', 'images'));
+        return view('dashboard/bookSingle', compact('book', 'images'));
     }
 
     /**

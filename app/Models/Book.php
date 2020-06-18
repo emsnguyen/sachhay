@@ -15,7 +15,7 @@ class Book extends Model
     * @var array
     */
     protected $dates = ['deleted_at'];
-    public function bookImages() {
+    public function book_images() {
         return $this->hasMany('App\Models\BookImage');
     }
     public function comments() {
@@ -23,5 +23,8 @@ class Book extends Model
     }
     public function ratings() {
         return $this->hasMany('App\Models\Rating');
+    }
+    public function images() {
+        return $this->hasManyThrough('App\Models\Image','App\Models\BookImage', 'image_id', 'id', 'id');
     }
 }

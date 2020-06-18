@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Book Manager') }}</title>
+    <title>@yield('title', 'Book Manager')</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -33,7 +33,12 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-
+                        <li class="nav-item">
+                            <a class="nav-link" href="/dashboard/books/search">Books</a>
+                        </li>
+                        <li class="nav-item">
+                            {{-- <a class="nav-link" href="{{ route('/users') }}">User</a> --}}
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -75,6 +80,7 @@
         <main class="py-4">
             @yield('content')
         </main>
+        @include('partials/footer')
     </div>
 </body>
 </html>
