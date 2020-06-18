@@ -13,9 +13,9 @@ class CommentSeeder extends Seeder
     public function run()
     {
         $comments = [
-            ['book_id'=>'1', 'content'=>'Sách không hay lắm','created_by'=>'MienNTH', 'updated_by'=>'MienNTH'],
-            ['book_id'=>'1', 'content'=>'Sách không hay lắm','created_by'=>'MienNTH', 'updated_by'=>'MienNTH'],
-            ['book_id'=>'2', 'content'=>'Sách không hay lắm','created_by'=>'MienNTH', 'updated_by'=>'MienNTH'],
+            ['book_id'=>1, 'content'=>'Sách không hay lắm','created_by'=>'MienNTH', 'updated_by'=>'MienNTH'],
+            ['book_id'=>1, 'content'=>'Sách không hay lắm','created_by'=>'MienNTH', 'updated_by'=>'MienNTH'],
+            ['book_id'=>2, 'content'=>'Sách không hay lắm','created_by'=>'MienNTH', 'updated_by'=>'MienNTH'],
         ];
         foreach ($comments as $comment) { 
             Comment::create(

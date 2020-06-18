@@ -13,9 +13,9 @@ class RatingSeeder extends Seeder
     public function run()
     {
         $ratings = [
-            ['book_id'=>'1', 'value'=>1,'created_by'=>'MienNTH', 'updated_by'=>'MienNTH'],
-            ['book_id'=>'1', 'content'=>5,'created_by'=>'MienNTH', 'updated_by'=>'MienNTH'],
-            ['book_id'=>'2', 'content'=>2,'created_by'=>'MienNTH', 'updated_by'=>'MienNTH'],
+            ['book_id'=>1, 'value'=>1,'created_by'=>'MienNTH', 'updated_by'=>'MienNTH'],
+            ['book_id'=>1, 'value'=>5,'created_by'=>'MienNTH', 'updated_by'=>'MienNTH'],
+            ['book_id'=>2, 'value'=>2,'created_by'=>'MienNTH', 'updated_by'=>'MienNTH'],
         ];
         foreach ($ratings as $rating) { 
             Rating::create(

@@ -3,7 +3,7 @@
 use App\Models\BookImage;
 use Illuminate\Database\Seeder;
 
-class BookbookImageseeder extends Seeder
+class BookImageseeder extends Seeder
 {
     /**
      * Run the database seeds.

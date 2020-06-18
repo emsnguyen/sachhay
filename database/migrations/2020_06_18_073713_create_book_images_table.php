@@ -13,12 +13,13 @@ class CreateBookImagesTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('book_images');
         Schema::create('book_images', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('book_id');
-            $table->foreign('book_id');
+            $table->foreign('book_id')->references('id')->on('books');
             $table->unsignedBigInteger('image_id');
-            $table->foreign('image_id');
+            $table->foreign('image_id')->references('id')->on('images');
             $table->timestamps();
         });
     }

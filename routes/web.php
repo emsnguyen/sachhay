@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::view('/', "BookController@show");
+Route::get('/', "BookController@index");
 Route::group(['prefix'=>'dashboard'], function(){
     Route::view('/','dashboard/dashboard');
     // book routes
@@ -35,3 +35,7 @@ Route::group(['prefix'=>'dashboard'], function(){
     Route::get('users/search', 'UserController@search');
     
 });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

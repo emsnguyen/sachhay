@@ -13,14 +13,15 @@ class CreateCommentsTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('comments');
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('book_id');
-            $table->foreign('book_id');
+            $table->foreign('book_id')->references('id')->on('books');
             $table->string('content');
             $table->string('created_by');
             $table->string('updated_by');
-            $table->softDeletes(0);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
