@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
-use App\Models\BookImage;
 use App\Models\Image;
 use Illuminate\Http\Request;
 
@@ -17,7 +16,6 @@ class BookController extends Controller
     public function index()
     {
         $books = Book::all();
-        // get image from book image table
         return view('dashboard/books')->with('books', $books);
     }
 
@@ -51,16 +49,12 @@ class BookController extends Controller
         // save to book table
         $book->save();
         $images = $request->images;
-        // save to image and book_image table
+        // save to image table
         foreach($images as $i) {
             $image = new Image();
             $image->url = $i->url;
+            $image->book_id = $book->id;
             $image->save();
-
-            $bookImage = new BookImage();
-            $bookImage->book_id = $book->id;
-            $bookImage->image_id = $image->id;
-            $bookImage->save();
         }
         return view('dashboard/bookSingle', compact('book', 'images'));
     }
@@ -74,8 +68,7 @@ class BookController extends Controller
     public function show($id)
     {
         $book = Book::find($id);
-        $images = BookImage::where('book_id',$id)->get();
-        return view('dashboard/bookDetail', compact('book', 'images'));
+        return view('dashboard/bookSingle')->with('book', $book);
     }
 
     public function upload(Request $request)
@@ -94,7 +87,6 @@ class BookController extends Controller
     public function edit($id)
     {
         $book = Book::find($id);
-        $images = BookImage::where('book_id',$id)->get();
         return view('dashboard/bookEdit', compact('book', 'images'));
     }
 
@@ -118,26 +110,19 @@ class BookController extends Controller
         
         // delete
         foreach ($request->deletedImages as $delete) {
-            // delete from book_images table    
-            BookImage::where('image_id', $delete)->delete();
             // delete old image from images table, given id
             Image::destroy($delete);
         }
-
+        $imagesToInsert = [];
         // add new image
         foreach ($request->addedImages as $add) {
             // save to images table 
             $newImage = new Image();
             $newImage->url=$add;
-            $newImage->save();
-            // save to book_image table
-            $bookImage = new BookImage();
-            $bookImage->book_id = $book->id;
-            $bookImage->image_id = $newImage->id;
-            $bookImage->save();
+            $newImage->book_id = $book->id;
+            $imagesToInsert.array_push($newImage);
         }
-        Image::insert($request->addedImages);
-
+        Image::insert($imagesToInsert);
         return view('dashboard/bookEdit', compact('book'));
     }
 

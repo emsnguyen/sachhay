@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Comment extends Model
 {
     use SoftDeletes;
-    protected $fillable=['book_id', 'content', 'created_by', 'updated_by'];
+    protected $fillable=['book_id', 'content', 'created_by'];
     /**
     * The attributes that should be mutated to dates.
     *

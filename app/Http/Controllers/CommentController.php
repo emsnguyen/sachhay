@@ -37,12 +37,19 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        $bookId = $request->bookId;
+        $error = '';
+        if (empty($request->content)) {
+            $error .= '<p class="text-danger">Content must not be blank</p>';
+            return $error;
+        } 
         $comment = new Comment();
-        $comment->book_id = $bookId;
+        $comment->book_id = $request->book_id;
         $comment->content = $request->content;
+        $comment->created_by = 'fake user';
+        $comment->updated_at = null;
+        $comment->updated_by = null;
         $comment->save();
-        return $comment->id;
+        return $comment;
     }
 
     /**

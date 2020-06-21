@@ -20,7 +20,7 @@ class CreateCommentsTable extends Migration
             $table->foreign('book_id')->references('id')->on('books');
             $table->string('content');
             $table->string('created_by');
-            $table->string('updated_by');
+            $table->string('updated_by')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

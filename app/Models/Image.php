@@ -8,7 +8,7 @@ class Image extends Model
 {
     public $timestamps = false;
     protected $fillable=['url'];
-    public function bookImages() {
-        return $this->hasMany('App\Models\BookImage');
-    }
+    public function book() {
+        return $this->belongsTo('App\Models\Book');
+    } 
 }

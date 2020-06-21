@@ -21,11 +21,11 @@ Route::group(['prefix'=>'dashboard'], function(){
     Route::resource('books', 'BookController')->except('create');
     Route::get('books/search', 'BookController@search');
     // comment routes
-    Route::post('books/{id}/comments', 'CommentController@create');
-    Route::resource('comments', 'CommentController')->except('create');
-    // rating routes
-    Route::post('books/{id}/rating', 'RatingController@create');
-    Route::resource('ratings', 'RatingController')->except('create');
+    Route::post('comments', 'CommentController@store');
+    // Route::resource('comments', 'CommentController')->except('store');
+    // rating routess
+    Route::post('ratings', 'RatingController@store');
+    Route::resource('ratings', 'RatingController')->except('store');
     // user routes
     Route::get('users/create/{id}', 'UserController@create');
     Route::resource('users', 'UserController')->except('create');
