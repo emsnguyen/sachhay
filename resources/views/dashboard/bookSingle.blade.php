@@ -12,7 +12,15 @@
             @else
                 <h5 class="card-title">No image available yet</h5>
             @endif
-
+            {{-- your own rating --}}
+            <div class="text-center" id="rating-area">
+                <span class="fa fa-star my-rating" id="rating-1"></span>
+                <span class="fa fa-star my-rating" id="rating-2"></span>
+                <span class="fa fa-star my-rating" id="rating-3"></span>
+                <span class="fa fa-star my-rating" id="rating-4"></span>
+                <span class="fa fa-star my-rating" id="rating-5"></span>
+                <p class="processing-text">Processing</p>
+            </div>
         </div>
         <div class="card-body">
             <input type="hidden" class="text" id="book_id" value="{{ $book->id }}" />
@@ -79,46 +87,6 @@
         </div>
     </div>
 </div>
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    $(document).ready(function () {
-        $('#comment_form').on('submit', function (event) {
-            event.preventDefault();
-            var content = $('#comment-content').val();
-            var book_id = $("#book_id").val();
-            $.ajax({
-                url: "/dashboard/comments",
-                method: "POST",
-                data: {
-                    content,
-                    book_id
-                },
-                dataType: "JSON",
-                success: function (data) {
-                    console.log("data: " + data);
-                    console.log("data.content: " + data.content);
-                    $('#comment_form')[0].reset();
-                    // add comment to comment listing section
-                    var html = '<div class="text-secondary">';
-                    html += '<p class="card-text">' + data.content + '</p>';
-                    html += '<p class="card-text">';
-                    html += '<em>' + data.created_by + '</em> - <span>' + data.created_at +
-                        '</span></p>';
-                    html += '</div><hr/>';
-                    $('#comment-listing').append(html);
-                    var oldCommentCounter = parseInt($('#comment-counter').html());
-                    $('#comment-counter').html(oldCommentCounter + 1);
-                    $('#comment_form').hide();
-                }
-            })
-        });
-    });
-
-</script>
+<script src="{{asset('/js/bookSingle.js')}}"></script>
 @endsection

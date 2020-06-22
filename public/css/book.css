@@ -1,8 +1,11 @@
 #cover-image {
-    max-width: 150px;
+    max-width: 200px;
     margin: 0 auto 10px;
 }
 div.grid {
     display:grid;
     grid-template-columns: 1fr 4fr;
+}
+.checked {
+    color: orange;
 }

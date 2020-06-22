@@ -38,12 +38,13 @@ class RatingController extends Controller
     public function store(Request $request)
     {
         // TODO: add validation
-        $bookId = $request->bookId;
         $rating = new Rating();
-        $rating->book_id = $bookId;
+        $rating->book_id = $request->book_id;
         $rating->value = $request->value;
+        $rating->created_by = 'current user';
+        $rating->updated_by = 'current user';
         $rating->save();
-        return $rating->id;
+        return $rating;
     }
 
     /**

@@ -25,7 +25,7 @@ Route::group(['prefix'=>'dashboard'], function(){
     // Route::resource('comments', 'CommentController')->except('store');
     // rating routess
     Route::post('ratings', 'RatingController@store');
-    Route::resource('ratings', 'RatingController')->except('store');
+    // Route::resource('ratings', 'RatingController')->except('store');
     // user routes
     Route::get('users/create/{id}', 'UserController@create');
     Route::resource('users', 'UserController')->except('create');
