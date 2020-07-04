@@ -1,8 +1,3 @@
-$.ajaxSetup({
-    headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    }
-});
 $(document).ready(function () {
     $('.processing-text').hide();
     var ratingValue = -1;
@@ -12,6 +7,7 @@ $(document).ready(function () {
         var book_id = $("#book_id").val();
         $.ajax({
             url: "/dashboard/comments",
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             method: "POST",
             data: {
                 content,
@@ -70,10 +66,12 @@ $(document).ready(function () {
         $(".my-rating").hide();
         $.ajax({
             url: "/dashboard/ratings",
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             method: "POST",
             data: {
                 book_id,
-                value:ratingValue
+                value: ratingValue,
+                // __token: $('meta[name="csrf-token"]').attr('content')
             },
             dataType: "JSON",
             success: function (res) {

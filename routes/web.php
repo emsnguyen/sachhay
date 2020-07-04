@@ -17,8 +17,7 @@ Route::get('/', "BookController@index");
 Route::group(['prefix'=>'dashboard'], function(){
     Route::view('/','dashboard/dashboard');
     // book routes
-    Route::get('books/create/{id}', 'BookController@create');
-    Route::resource('books', 'BookController')->except('create');
+    Route::resource('books', 'BookController');
     Route::get('books/search', 'BookController@search');
     // comment routes
     Route::post('comments', 'CommentController@store');
@@ -28,7 +27,7 @@ Route::group(['prefix'=>'dashboard'], function(){
     // Route::resource('ratings', 'RatingController')->except('store');
     // user routes
     Route::get('users/create/{id}', 'UserController@create');
-    Route::resource('users', 'UserController')->except('create');
+    Route::resource('users', 'UserController');
     Route::get('users/search', 'UserController@search');
     
 });

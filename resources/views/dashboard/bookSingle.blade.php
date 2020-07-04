@@ -3,11 +3,21 @@
 @section('content')
 <div class="container mt-5">
     <h2>Book Detail</h2>
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <div class="card grid">
         <div class="card-body">
             @if(is_object($book->images))
                 @foreach($book->images as $image)
-                    <img id="cover-image" src="{{ $image->url }}" alt="book cover" />
+                    <img id="cover-image" src="{{ asset($image->url) }}" alt="book cover" />
+                    {{-- src="{{ asset($image->url) }}" alt="" --}}
                 @endforeach
             @else
                 <h5 class="card-title">No image available yet</h5>
@@ -81,12 +91,11 @@
     <div class="card">
         <div class="card-body">
             {{-- //TODO: check quyen --}}
-            <a href="/dashboard/books/{{ $book->id }}" class="btn btn-primary">Edit</a>
+            <a href="/dashboard/books/{{ $book->id }}/edit" class="btn btn-primary">Edit</a>
             {{-- //TODO: check quyen --}}
-            <a href="/dashboard/books/{{ $book->id }}" class="btn btn-primary">Delete</a>
+            <a href="/dashboard/books/{{ $book->id }}/delete" class="btn btn-primary">Delete</a>
         </div>
     </div>
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="{{asset('/js/bookSingle.js')}}"></script>
 @endsection

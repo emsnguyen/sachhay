@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
@@ -37,15 +38,14 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        $error = '';
-        if (empty($request->content)) {
-            $error .= '<p class="text-danger">Content must not be blank</p>';
-            return $error;
-        } 
+        // validate form data
+        $request->validate([
+            'content' => 'required|max:255'
+        ]);
         $comment = new Comment();
         $comment->book_id = $request->book_id;
         $comment->content = $request->content;
-        $comment->created_by = 'fake user';
+        $comment->created_by = Auth::user()->name;
         $comment->updated_at = null;
         $comment->updated_by = null;
         $comment->save();
@@ -83,8 +83,11 @@ class CommentController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // check quyền người dùng
+
         $comment = Comment::find($id);
         $comment->content = $request->content;
+        $comment->updated_by = Auth::user()->name;
         $comment->save();
     }
 

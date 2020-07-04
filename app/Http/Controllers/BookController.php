@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Image;
+use Illuminate\Auth\Access\Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class BookController extends Controller
 {
@@ -24,10 +26,9 @@ class BookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($id)
+    public function create()
     {
-        $book = Book::find($id);
-        return view('dashboard/bookCreate', compact('book'));
+        return view('dashboard/bookCreate');
     }
 
     /**
@@ -38,7 +39,26 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        // TODO: add validation
+        // validate form data
+        $request->validate([
+            'title' => 'bail|required|max:255',
+            'author' => 'required|max:255',
+            'isbn' => 'unique:books|max:255',
+            // 'isbn' => 'required|max:255',
+            'author' => 'required|max:255',
+            'review' => 'required|max:10000',
+            'file'=> 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+        ]);
+        $fileName = time().'.'.$request->file->extension();  
+        $request->file->move(public_path().'/bookcovers/', $fileName);
+        // Storage::disk('public')->put($fileName, $request->file);
+        $url = Storage::url($fileName);
+   
+        // return back()
+        //     ->with('success','You have successfully upload file.')
+        //     ->with('file',$fileName);
+
+        // create object for saving
         $book = new Book();
         $book->title = $request->title;
         $book->isbn = $request->isbn;
@@ -48,15 +68,14 @@ class BookController extends Controller
         
         // save to book table
         $book->save();
-        $images = $request->images;
+
         // save to image table
-        foreach($images as $i) {
-            $image = new Image();
-            $image->url = $i->url;
-            $image->book_id = $book->id;
-            $image->save();
-        }
-        return view('dashboard/bookSingle', compact('book', 'images'));
+        $image = new Image();
+        $image->url = 'bookcovers/'.$fileName;
+        $image->book_id = $book->id;
+        $image->save();
+
+        return view('dashboard/bookSingle')->with('book', $book);
     }
 
     /**
@@ -73,6 +92,10 @@ class BookController extends Controller
 
     public function upload(Request $request)
     {
+        $request->validate([
+            'images' => 'required|mimes:png,jpg,jpeg|max:2048',
+        ]);
+
         $path = $request->file('file')->store('files');
         // return to book create or book edit page
         return view('dashboard/bookCreate', compact('path'));
@@ -99,7 +122,15 @@ class BookController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // TODO: add form validation
+        // validate form data
+        $validatedData = $request->validate([
+            'title' => 'bail|required|max:255',
+            'author' => 'required|max:255',
+            'isbn' => 'unique:books|max:255',
+            'author' => 'required|max:255',
+            'review' => 'required|max:10000',
+        ]);
+        // get back the object to update
         $book = Book::find($id);
         $book->title=$request->title;
         $book->author=$request->author;
@@ -110,15 +141,19 @@ class BookController extends Controller
         
         // delete
         foreach ($request->deletedImages as $delete) {
+            // delete from storage
+            Storage::delete($delete);
             // delete old image from images table, given id
             Image::destroy($delete);
         }
         $imagesToInsert = [];
         // add new image
         foreach ($request->addedImages as $add) {
+            // save to disk and get back file path
+            $path = $request->file($add)->store('bookcovers');
             // save to images table 
             $newImage = new Image();
-            $newImage->url=$add;
+            $newImage->url=$path;
             $newImage->book_id = $book->id;
             $imagesToInsert.array_push($newImage);
         }
@@ -134,9 +169,12 @@ class BookController extends Controller
      */
     public function destroy($id)
     {
-        //TODO: add validation, only allow when no rating and comment is added yet
-        $books = Book::find($id);
-        Book::destroy($books);
+        // Only allow when no rating and comment is added yet
+        $book = Book::find($id);
+        if (!empty($book->comment) || !empty($book->ratings)) {
+            return "Cannot delete";
+        }
+        Book::destroy($book);
         return view('dashboard');
     }
 }

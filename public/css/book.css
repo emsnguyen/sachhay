@@ -1,4 +1,4 @@
-#cover-image {
+#cover-image, .cover-image {
     max-width: 200px;
     margin: 0 auto 10px;
 }

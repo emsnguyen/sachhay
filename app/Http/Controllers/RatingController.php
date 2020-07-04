@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Rating;
+use Illuminate\Auth\Access\Gate;
 use Illuminate\Http\Request;
 
 class RatingController extends Controller
@@ -37,14 +38,22 @@ class RatingController extends Controller
      */
     public function store(Request $request)
     {
-        // TODO: add validation
-        $rating = new Rating();
-        $rating->book_id = $request->book_id;
-        $rating->value = $request->value;
-        $rating->created_by = 'current user';
-        $rating->updated_by = 'current user';
-        $rating->save();
-        return $rating;
+        // validate form data
+        $request->validate([
+            'value' => 'required'
+        ]);
+        // if (Gate::allows('add-rating', $request)) {
+            $rating = new Rating();
+            $rating->book_id = $request->book_id;
+            $rating->value = $request->value;
+            $rating->created_by = 'current user';
+            $rating->updated_by = 'current user';
+            $rating->save();
+            return $rating;
+        // } else {
+
+        // }
+        
     }
 
     /**

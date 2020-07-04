@@ -21,7 +21,7 @@ class CreateBooksTable extends Migration
             $table->string('publisher');
             $table->string('review');
             $table->string('created_by');
-            $table->string('updated_by');
+            $table->string('updated_by')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

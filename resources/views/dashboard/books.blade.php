@@ -9,7 +9,7 @@
             <h5 class="card-header">{{ $book->title }}</h5>
             <div class="card-body">
                 @if(is_object($book->images->first()))
-                    <img src="{{ $book->images->first()->url }}" alt="" class="src"/>
+                    <img src="{{ asset($book->images->first()->url) }}" alt="" class="src"/>
                 @else
                     <h5 class="card-title">No image</h5>
                 @endif
