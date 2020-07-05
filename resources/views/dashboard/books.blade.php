@@ -6,10 +6,10 @@
     <h2>Available Books</h2>
     @foreach($books as $book)
         <div class="card">
-            <h5 class="card-header">{{ $book->title }}</h5>
+            <h5 class="card-header">{{ $book->title }} <span><em>{{$book->author}}</em></span></h5>
             <div class="card-body">
                 @if(is_object($book->images->first()))
-                    <img src="{{ asset($book->images->first()->url) }}" alt="" class="src"/>
+                    <img src="{{ asset($book->images->first()->url) }}" alt="" class="cover-image"/>
                 @else
                     <h5 class="card-title">No image</h5>
                 @endif

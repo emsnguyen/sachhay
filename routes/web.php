@@ -17,8 +17,9 @@ Route::get('/', "BookController@index");
 Route::group(['prefix'=>'dashboard'], function(){
     Route::view('/','dashboard/dashboard');
     // book routes
+    Route::get('books/search', 'BookController@search')->name('books.search');
     Route::resource('books', 'BookController');
-    Route::get('books/search', 'BookController@search');
+    
     // comment routes
     Route::post('comments', 'CommentController@store');
     // Route::resource('comments', 'CommentController')->except('store');

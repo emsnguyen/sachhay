@@ -45,7 +45,7 @@ class CommentController extends Controller
         $comment = new Comment();
         $comment->book_id = $request->book_id;
         $comment->content = $request->content;
-        $comment->created_by = Auth::user()->name;
+        $comment->created_by = 'Fake user';
         $comment->updated_at = null;
         $comment->updated_by = null;
         $comment->save();

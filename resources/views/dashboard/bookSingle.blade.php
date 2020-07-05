@@ -17,7 +17,6 @@
             @if(is_object($book->images))
                 @foreach($book->images as $image)
                     <img id="cover-image" src="{{ asset($image->url) }}" alt="book cover" />
-                    {{-- src="{{ asset($image->url) }}" alt="" --}}
                 @endforeach
             @else
                 <h5 class="card-title">No image available yet</h5>
@@ -93,7 +92,11 @@
             {{-- //TODO: check quyen --}}
             <a href="/dashboard/books/{{ $book->id }}/edit" class="btn btn-primary">Edit</a>
             {{-- //TODO: check quyen --}}
-            <a href="/dashboard/books/{{ $book->id }}/delete" class="btn btn-primary">Delete</a>
+            <form action="{{ route('books.destroy', $book->id) }}" method="POST">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger">Delete book</button>
+            </form>
         </div>
     </div>
 </div>
