@@ -4,18 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Image;
-use Illuminate\Auth\Access\Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
-
+use Illuminate\Support\Facades\Gate;
 class BookController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+    
     public function index()
     {
         $books = Book::all();
@@ -29,6 +33,12 @@ class BookController extends Controller
      */
     public function create()
     {
+        // authorize 
+        $response = Gate::check('add-book', Auth::user());
+        if (!$response) {
+            array_push($errors, 'You are not authorized to create book');
+            return back()->withErrors($errors);
+        }
         return view('dashboard/bookCreate');
     }
 
@@ -59,6 +69,7 @@ class BookController extends Controller
         $book->author = $request->author;
         $book->publisher = $request->publisher;
         $book->review = $request->review;
+        $book->created_by=Auth::user()->name;
         
         // save to book table
         $book->save();
@@ -92,8 +103,16 @@ class BookController extends Controller
      */
     public function edit($id)
     {
+        $errors = array();
         $book = Book::find($id);
+        // authorize 
+        // $response = Gate::check('update-book', [$book]);
+        if (!Gate::check('update-book', [Auth::user(), $book])) {
+            // array_push($errors, 'You are not authorized to edit this book');
+            // return back()->withErrors($errors);
+        } 
         return view('dashboard/bookEdit')->with('book', $book);
+        
     }
 
     /**
@@ -105,6 +124,17 @@ class BookController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $errors = array();
+        // get back the object to update
+        $book = Book::find($id);
+        // authorize 
+        // $book->created_by="HKT";
+        // $response = Gate::check('update-book', [Auth::user(), $book]);
+        if (!Gate::allows('update-book', [$book])) {
+            array_push($errors, 'You are not authorized to edit this book');
+            return back()->withErrors($errors);
+        } 
+
         // validate form data
         $request->validate([
             'title' => 'bail|required|max:255',
@@ -118,13 +148,11 @@ class BookController extends Controller
             'review' => 'required|max:10000',
             'file'=> 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
-        // get back the object to update
-        $book = Book::find($id);
         $book->title=$request->title;
         $book->author=$request->author;
         $book->publisher=$request->publisher;
         $book->review=$request->review;
-        $book->updated_by='Fake update user';
+        $book->updated_by=Auth::user()->name;
         // save update on books table
         $book->save();
 
@@ -156,27 +184,8 @@ class BookController extends Controller
             $image->book_id = $book->id;
             $image->save();     
         }
-        
-        // // delete
-        // foreach ($request->deletedImages as $delete) {
-        //     // delete from storage
-        //     Storage::delete($delete);
-        //     // delete old image from images table, given id
-        //     Image::destroy($delete);
-        // }
-        // $imagesToInsert = [];
-        // // add new image
-        // foreach ($request->addedImages as $add) {
-        //     // save to disk and get back file path
-        //     $path = $request->file($add)->store('bookcovers');
-        //     // save to images table 
-        //     $newImage = new Image();
-        //     $newImage->url=$path;
-        //     $newImage->book_id = $book->id;
-        //     $imagesToInsert.array_push($newImage);
-        // }
-        // Image::insert($imagesToInsert);
         return $this->show($book->id);
+        
     }
 
     /**
@@ -187,23 +196,27 @@ class BookController extends Controller
      */
     public function destroy($id)
     {
-        // Only allow when no rating and comment is added yet
         $book = Book::find($id);
         $errors = array();
-        if (!is_null($book->comment) || !is_null($book->ratings)) {
-            array_push($errors, 'You are not authorized to delete this book because there are already comments and ratings for it');
+        // Authorize
+        // $response = Gate::check('delete-book', Auth::user(), $book);
+        if (!Gate::allows('delete-book', [$book])) {
+            array_push($errors, 'You are not authorized to delete this book');
+            return back()->withErrors($errors);
+        }   
+        if (count($book->comments) > 0 || count($book->ratings) > 0) {
+            array_push($errors, 'This book cannot be deleted because there are already comments and ratings for it');
             return back()->withErrors($errors);
         }
-        Book::destroy($book);
-        return redirect('dashboard/books')->with('success', 'Successfully deleted your reservation!');
+        $book->delete();
+        return redirect('dashboard/books')->with('success', 'Successfully deleted your book!');
     }
 
     public function search(Request $request)
     {
         $query = $request->q;
         // search like in eloquent laravel
-        $books = Book::where('title', 'like', '%'.$query.'%')
-        ->orWhere('author', 'like', '%'.$query.'%')->get();
+        $books = Book::where('title', 'like', '%'.$query.'%')->orWhere('author', 'like', '%'.$query.'%')->get();
         return view('dashboard/books')->with('books', $books);
     }
 }

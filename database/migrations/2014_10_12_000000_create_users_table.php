@@ -19,10 +19,10 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->tinyInteger('role'); // 1 is admin, 2 is normal user
+            $table->tinyInteger('role')->default(2); // 1 is admin, 2 is normal user
             $table->rememberToken();
             $table->timestamps();
-            $table->boolean('banned');
+            $table->boolean('banned')->default(false);
         });
     }
 

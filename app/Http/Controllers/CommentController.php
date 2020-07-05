@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class CommentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -38,6 +44,14 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
+        $errors = array();
+        $bookCreator = Book::find($request->book_id)->created_by;
+        // authorize 
+        $response = Gate::check('add-comment', Auth::user(), $bookCreator);
+        if (!$response) {
+            array_push($errors, 'You are not authorized to add comment');
+            return back()->withErrors($errors);
+        } 
         // validate form data
         $request->validate([
             'content' => 'required|max:255'
@@ -45,9 +59,7 @@ class CommentController extends Controller
         $comment = new Comment();
         $comment->book_id = $request->book_id;
         $comment->content = $request->content;
-        $comment->created_by = 'Fake user';
-        $comment->updated_at = null;
-        $comment->updated_by = null;
+        $comment->created_by = Auth::user()->name;
         $comment->save();
         return $comment;
     }
@@ -83,8 +95,15 @@ class CommentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // check quyền người dùng
-
+        // get back the object to update
+        $comment = Comment::find($id);
+        $errors = array();
+        // authorize 
+        $response = Gate::check('update-comment', Auth::user(), $comment);
+        if (!$response) {
+            array_push($errors, 'You are not authorized to edit this comment');
+            return back()->withErrors($errors);
+        } 
         $comment = Comment::find($id);
         $comment->content = $request->content;
         $comment->updated_by = Auth::user()->name;
@@ -99,7 +118,15 @@ class CommentController extends Controller
      */
     public function destroy($id)
     {
+        // get back the object to delete
         $comment = Comment::find($id);
+        $errors = array();
+        // authorize
+        $response = Gate::check('delete-comment', Auth::user(), $comment);
+        if (!$response) {
+            array_push($errors, 'You are not authorized to delete this comment');
+            return back()->withErrors($errors);
+        } 
         $comment->delete();
     }
 }

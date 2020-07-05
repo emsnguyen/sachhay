@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
 use App\Models\Rating;
-use Illuminate\Auth\Access\Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class RatingController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -38,6 +44,14 @@ class RatingController extends Controller
      */
     public function store(Request $request)
     {
+        $errors = array();
+        $bookCreator = Book::find($request->book_id)->created_by;
+        // authorize 
+        $response = Gate::check('add-rating', Auth::user(), $bookCreator);
+        if (!$response) {
+            array_push($errors, 'You are not authorized to add rating');
+            return back()->withErrors($errors);
+        } 
         // validate form data
         $request->validate([
             'value' => 'required'
@@ -46,8 +60,7 @@ class RatingController extends Controller
             $rating = new Rating();
             $rating->book_id = $request->book_id;
             $rating->value = $request->value;
-            $rating->created_by = 'current user';
-            $rating->updated_by = 'current user';
+            $rating->created_by = Auth::user()->name;
             $rating->save();
             return $rating;
         // } else {
@@ -88,7 +101,16 @@ class RatingController extends Controller
     public function update(Request $request, $id)
     {
         $rating = Rating::find($id);
+        $errors = array();
+        // authorize 
+        $response = Gate::check('update-rating', Auth::user(), $rating);
+        if (!$response) {
+            array_push($errors, 'You are not authorized to update this rating');
+            return back()->withErrors($errors);
+        } 
+
         $rating->value = $request->value;
+        $rating->updated_by = Auth::user()->name;
         $rating->save();
     }
 
@@ -101,6 +123,13 @@ class RatingController extends Controller
     public function destroy($id)
     {
         $rating = Rating::find($id);
+        $errors = array();
+        // authorize 
+        $response = Gate::check('delete-rating', Auth::user(), $rating);
+        if (!$response) {
+            array_push($errors, 'You are not authorized to delete this rating');
+            return back()->withErrors($errors);
+        } 
         $rating->delete();
     }
 }

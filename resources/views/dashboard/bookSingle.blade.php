@@ -3,10 +3,10 @@
 @section('content')
 <div class="container mt-5">
     <h2>Book Detail</h2>
-    @if ($errors->any())
+    @if($errors->any())
         <div class="alert alert-danger">
             <ul>
-                @foreach ($errors->all() as $error)
+                @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
             </ul>
@@ -22,14 +22,23 @@
                 <h5 class="card-title">No image available yet</h5>
             @endif
             {{-- your own rating --}}
-            <div class="text-center" id="rating-area">
-                <span class="fa fa-star my-rating" id="rating-1"></span>
-                <span class="fa fa-star my-rating" id="rating-2"></span>
-                <span class="fa fa-star my-rating" id="rating-3"></span>
-                <span class="fa fa-star my-rating" id="rating-4"></span>
-                <span class="fa fa-star my-rating" id="rating-5"></span>
-                <p class="processing-text">Processing</p>
-            </div>
+            <?php 
+                $user = Auth::user();
+                $isBanned = $user->banned;
+                $isAdmin = $user->role === 1;
+                $isBookCreator = $book->created_by === $user->name;
+                $canAddRating = $isAdmin || (!$isBanned && !$isBookCreator);
+            ?>
+            @if($canAddRating)
+                <div class="text-center" id="rating-area">
+                    <span class="fa fa-star my-rating" id="rating-1"></span>
+                    <span class="fa fa-star my-rating" id="rating-2"></span>
+                    <span class="fa fa-star my-rating" id="rating-3"></span>
+                    <span class="fa fa-star my-rating" id="rating-4"></span>
+                    <span class="fa fa-star my-rating" id="rating-5"></span>
+                    <p class="processing-text">Processing</p>
+                </div>
+            @endif
         </div>
         <div class="card-body">
             <input type="hidden" class="text" id="book_id" value="{{ $book->id }}" />
@@ -64,41 +73,84 @@
         <div class="card-body">
             <div id="comment-listing">
                 @foreach($book->comments as $comment)
-                    <div class="text-secondary">
-                        <p class="card-text">{{ $comment->content }}</p>
-                        <p class="card-text">
-                            <em>{{ $comment->created_by }}</em> - <span>{{ $comment->created_at }}</span>
-                        </p>
-                        <p class="card-text" id="comment-error"></p>
-                    </div>
+                    <ul class="list-inline m-0">
+                        <li class="list-inline-item">
+                            <div class="text-secondary">
+                                <p class="card-text">{{ $comment->content }}</p>
+                                <p class="card-text">
+                                    <em>{{ $comment->created_by }}</em> - <span>{{ $comment->created_at }}</span>
+                                </p>
+                                <p class="card-text" id="comment-error"></p>
+                            </div>
+                        </li>
+                        <?php 
+                            $user = Auth::user();
+                            $isBanned = $user->banned;
+                            $isAdmin = $user->role === 1;
+                            $isCommentCreator = $comment->created_by === $user->name;
+                            $canUpdateOrDeleteComment = !$isBanned && ($isAdmin || $isCommentCreator);                    
+                        ?>
+                        @if($canUpdateOrDeleteComment)
+                            <li class="list-inline-item">
+                                <button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip"
+                                    data-placement="top" title="Edit"><i class="fa fa-edit"></i></button>
+                            </li>
+                            <li class="list-inline-item">
+                                <button class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip"
+                                    data-placement="top" title="Delete"><i class="fa fa-trash"></i></button>
+                            </li>
+                        @endif
+                    </ul>
                     <hr />
                 @endforeach
             </div>
             {{-- Add comment form --}}
-            <form id="comment_form">
-                <div class="form-group">
-                    <textarea id="comment-content" name="content" class="form-control"></textarea>
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Add comment</button>
-                </div>
-            </form>
-
+            {{-- check role  --}}
+            <?php 
+                $user = Auth::user();
+                $isBanned = $user->banned;
+                $isAdmin = $user->role === 1;
+                $isBookCreator = $book->created_by === $user->name;
+                $canAddComment = $isAdmin || (!$isBanned && !$isBookCreator);
+            ?>
+            @if($canAddComment)
+                <form id="comment_form">
+                    <div class="form-group">
+                        <textarea id="comment-content" name="content" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Add comment</button>
+                    </div>
+                </form>
+            @endif
         </div>
     </div>
 
     <div class="card">
         <div class="card-body">
             {{-- //TODO: check quyen --}}
-            <a href="/dashboard/books/{{ $book->id }}/edit" class="btn btn-primary">Edit</a>
-            {{-- //TODO: check quyen --}}
-            <form action="{{ route('books.destroy', $book->id) }}" method="POST">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-danger">Delete book</button>
-            </form>
+            {{-- @can('update-book', $book) --}}
+
+            <?php 
+                $user = Auth::user();
+                $isBanned = $user->banned;
+                $isAdmin = $user->role === 1;
+                $isBookCreator = $book->created_by === $user->name;
+                $canUpdateOrDelete = !$isBanned && ($isAdmin || $isBookCreator);
+            ?>
+            @if($canUpdateOrDelete)
+                {{-- edit form --}}
+                <a href="/dashboard/books/{{ $book->id }}/edit" class="btn btn-primary">Edit</a>
+                {{-- delete form --}}
+                <form action="{{ route('books.destroy', $book->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">Delete book</button>
+                </form>
+            @endif
         </div>
     </div>
+
 </div>
-<script src="{{asset('/js/bookSingle.js')}}"></script>
+<script src="{{ asset('/js/bookSingle.js') }}"></script>
 @endsection
