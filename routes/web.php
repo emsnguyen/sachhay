@@ -23,10 +23,10 @@ Route::group(['prefix'=>'dashboard'], function(){
     
     // comment routes
     Route::post('comments', 'CommentController@store');
-    // Route::resource('comments', 'CommentController')->except('store');
+    Route::resource('comments', 'CommentController')->except('store');
     // rating routess
     Route::post('ratings', 'RatingController@store');
-    // Route::resource('ratings', 'RatingController')->except('store');
+    Route::resource('ratings', 'RatingController')->except('store');
     // user routes
     Route::get('users/create/{id}', 'UserController@create');
     Route::resource('users', 'UserController');

@@ -73,7 +73,7 @@
         <div class="card-body">
             <div id="comment-listing">
                 @foreach($book->comments as $comment)
-                    <ul class="list-inline m-0">
+                    <ul class="list-inline m-0" id="ul-{{$comment->id}}">
                         <li class="list-inline-item">
                             <div class="text-secondary">
                                 <p class="card-text">{{ $comment->content }}</p>
@@ -92,16 +92,21 @@
                         ?>
                         @if($canUpdateOrDeleteComment)
                             <li class="list-inline-item">
-                                <button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip"
+                                <button class="btn btn-success btn-sm rounded-0 btnEditCmt" type="button" data-toggle="tooltip" 
+                            {{-- onclick="editComment({{$comment->id}});"  --}}
+                            id="btnEditCmt-{{$comment->id}}"
                                     data-placement="top" title="Edit"><i class="fa fa-edit"></i></button>
                             </li>
                             <li class="list-inline-item">
-                                <button class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip"
+                                <button class="btn btn-danger btn-sm rounded-0 btnDeleteCmt" type="button" data-toggle="tooltip"
+                                    {{-- onclick="deleteComment({{$comment->id}});" --}}
+                                    id="btnDeleteCmt-{{$comment->id}}"
                                     data-placement="top" title="Delete"><i class="fa fa-trash"></i></button>
                             </li>
                         @endif
+                        <hr />
                     </ul>
-                    <hr />
+                    
                 @endforeach
             </div>
             {{-- Add comment form --}}

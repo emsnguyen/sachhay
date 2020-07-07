@@ -44,11 +44,13 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
+        
         $errors = array();
         $bookCreator = Book::find($request->book_id)->created_by;
+        
         // authorize 
-        $response = Gate::check('add-comment', Auth::user(), $bookCreator);
-        if (!$response) {
+        // $response = Gate::check('add-comment', Auth::user(), $bookCreator);
+        if (!Gate::allows('add-comment', [$bookCreator]))  {
             array_push($errors, 'You are not authorized to add comment');
             return back()->withErrors($errors);
         } 
@@ -122,8 +124,7 @@ class CommentController extends Controller
         $comment = Comment::find($id);
         $errors = array();
         // authorize
-        $response = Gate::check('delete-comment', Auth::user(), $comment);
-        if (!$response) {
+        if (!Gate::allows('delete-comment', [$comment])) {
             array_push($errors, 'You are not authorized to delete this comment');
             return back()->withErrors($errors);
         } 
