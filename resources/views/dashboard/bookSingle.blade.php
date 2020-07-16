@@ -29,15 +29,35 @@
                 $isBookCreator = $book->created_by === $user->name;
                 $canAddRating = $isAdmin || (!$isBanned && !$isBookCreator);
             ?>
+            <?php
+                $rated = 0;
+            ?>
             @if($canAddRating)
+               @foreach ($book->ratings as $rating)
+                   @if ($rating->created_by == $user->name)
+                        <?php
+                            $rated = $rating->value;
+                        ?>
+                        <div class="text-center" id="rating-area">
+                            @for($i = 1; $i <= $rating->value; $i++)
+                                <span class="fa fa-star my-rating checked" id="rating-{{$i}}"></span>    
+                            @endfor
+                            @for($i = $rating->value+1; $i <= 5; $i++)
+                                <span class="fa fa-star my-rating" id="rating-{{$i}}"></span>    
+                            @endfor
+                            <p class="processing-text">Processing</p>
+                        </div>
+                        @break
+                   @endif
+               @endforeach
+               @if($rated == 0) 
                 <div class="text-center" id="rating-area">
-                    <span class="fa fa-star my-rating" id="rating-1"></span>
-                    <span class="fa fa-star my-rating" id="rating-2"></span>
-                    <span class="fa fa-star my-rating" id="rating-3"></span>
-                    <span class="fa fa-star my-rating" id="rating-4"></span>
-                    <span class="fa fa-star my-rating" id="rating-5"></span>
+                    @for($i = 1; $i <= 5; $i++)
+                        <span class="fa fa-star my-rating" id="rating-{{$i}}"></span>    
+                    @endfor
                     <p class="processing-text">Processing</p>
                 </div>
+                @endif
             @endif
         </div>
         <div class="card-body">
@@ -75,8 +95,8 @@
                 @foreach($book->comments as $comment)
                     <ul class="list-inline m-0" id="ul-{{$comment->id}}">
                         <li class="list-inline-item">
-                            <div class="text-secondary">
-                                <p class="card-text">{{ $comment->content }}</p>
+                            <div class="text-secondary" id="comment-wrapper-{{$comment->id}}">
+                                <p class="card-text" id="comment-detail-{{$comment->id}}">{{ $comment->content }}</p>
                                 <p class="card-text">
                                     <em>{{ $comment->created_by }}</em> - <span>{{ $comment->created_at }}</span>
                                 </p>
@@ -92,13 +112,13 @@
                         ?>
                         @if($canUpdateOrDeleteComment)
                             <li class="list-inline-item">
-                                <button class="btn btn-success btn-sm rounded-0 btnEditCmt" type="button" data-toggle="tooltip" 
+                                <button class="btn btn-success btn-sm rounded-0 btnEditCmt" onclick="showEditCommentForm({{$comment->id}}, '{{$comment->content}}')" type="button" data-toggle="tooltip" 
                             {{-- onclick="editComment({{$comment->id}});"  --}}
                             id="btnEditCmt-{{$comment->id}}"
                                     data-placement="top" title="Edit"><i class="fa fa-edit"></i></button>
                             </li>
                             <li class="list-inline-item">
-                                <button class="btn btn-danger btn-sm rounded-0 btnDeleteCmt" type="button" data-toggle="tooltip"
+                                <button class="btn btn-danger btn-sm rounded-0 btnDeleteCmt" onclick="deleteComment({{$comment->id}})" type="button" data-toggle="tooltip"
                                     {{-- onclick="deleteComment({{$comment->id}});" --}}
                                     id="btnDeleteCmt-{{$comment->id}}"
                                     data-placement="top" title="Delete"><i class="fa fa-trash"></i></button>

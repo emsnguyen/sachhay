@@ -101,8 +101,7 @@ class CommentController extends Controller
         $comment = Comment::find($id);
         $errors = array();
         // authorize 
-        $response = Gate::check('update-comment', Auth::user(), $comment);
-        if (!$response) {
+        if (!Gate::allows('update-comment', [$comment])) {
             array_push($errors, 'You are not authorized to edit this comment');
             return back()->withErrors($errors);
         } 
@@ -110,6 +109,7 @@ class CommentController extends Controller
         $comment->content = $request->content;
         $comment->updated_by = Auth::user()->name;
         $comment->save();
+        return $comment;
     }
 
     /**

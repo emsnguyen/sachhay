@@ -35,16 +35,16 @@ $(document).ready(function () {
                 html += '</li>';
 
                 // add edit and comment button 
-                html += '<li class="list-inline-item">'
-                html += '<button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" '
-                html += 'onclick="editComment(' + data.id + ');"';
-                html += 'data-placement="top" title="Edit"><i class="fa fa-edit"></i></button>'
-                html += '</li>'
-                html += '<li class="list-inline-item">'
-                html += '<button class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip"'
-                html += 'onclick="deleteComment(' + data.id + ');"'
-                html += 'data-placement="top" title="Delete"><i class="fa fa-trash"></i></button>'
-                html += '</li><hr/>'
+                html += '<li class="list-inline-item">';
+                html += '<button class="btn btn-success btn-sm rounded-0 btnEditCmt" onclick="showEditCommentForm('+data.id+ ','+data.content +')" type="button" data-toggle="tooltip" ';
+                html += 'id="btnEditCmt-' + data.id + '"';
+                html += 'data-placement="top" title="Edit"><i class="fa fa-edit"></i></button>';
+                html += '</li>';
+                html += '<li class="list-inline-item">';
+                html += '<button class="btn btn-danger btn-sm rounded-0 onclick="deleteComment('+data.id+')" btnDeleteCmt" type="button" data-toggle="tooltip"';
+                html += 'id="btnDeleteCmt-' + data.id + '"';
+                html += 'data-placement="top" title="Delete"><i class="fa fa-trash"></i></button>';
+                html += '</li><hr/>';
                 html += '</ul>';
 
                 // add comment to comment listing section
@@ -111,52 +111,14 @@ $(document).ready(function () {
                 }
                 $('.processing-text').hide();
                 $(".my-rating").show();
-                // var html = '';
-                // for (var i = 1; i <= currentId; i++) {
-                //     html += '<span class="fa fa-star my-rating checked" id="rating-'+i+'"></span>';
-                // }
-                // for (var i = currentId+1; i <= 5; i++) {
-                //     html += '<span class="fa fa-star my-rating" id="rating-'+i+'"></span>';
-                // }
-                // $('#rating-area').empty();
-                // $('#rating-area').html(html);
             }
         })
     });
 
 });
 
-$('.btnEditCmt').on('click', function(event) {
-    event.preventDefault();
-    var idVal = this.id.substring(this.id.lastIndexOf('-')+1);
-    
-    $.ajax({
-        url: "/dashboard/comments/" + idVal,
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        data: {
-            content
-        },
-        method: "PUT",
-        // dataType: "JSON",
-        success: function (data) {
-            var oldCommentCounter = parseInt($('#comment-counter').html());
-            $('#comment-counter').html(oldCommentCounter - 1);
-            
-            // var ulId = document.querySelector('#ul-' + idVal);
-            // ulId.parentNode.removeChild(ulId);
-            $('#ul-'+idVal).remove();
-        },
-        error: function(req, err) {
-            console.log("Ajax response fail: " + err);
-        }
-    });
-});
-
-$('.btnDeleteCmt').on('click', function(event) {
-    event.preventDefault();
-    var idVal = this.id.substring(this.id.lastIndexOf('-')+1);
+function deleteComment(id) {
+    var idVal = id;
     $.ajax({
         url: "/dashboard/comments/" + idVal,
         headers: {
@@ -176,4 +138,49 @@ $('.btnDeleteCmt').on('click', function(event) {
             console.log("Ajax response fail: " + err);
         }
     });
-});
+}
+function editComment(id) {
+    var content = $("#comment-content-"+ id).val();
+    $.ajax({
+        url: "/dashboard/comments/" + id,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        data: {
+            content
+        },
+        method: "PUT",
+        // dataType: "JSON",
+        success: function (data) {
+            $("#comment-detail-"+ id).text(data.content);
+            $("#comment-detail-"+ id).show();
+            $("#btnEditCmt-"+ id).show();
+            $("#edit-form-"+ id).remove();     
+        
+        },
+        error: function(req, err) {
+            console.log("Ajax response fail: " + err);
+        }
+    });
+}        
+function showEditCommentForm(id, content) {
+    // hide comment detail
+    $("#comment-detail-"+ id).hide();
+    $("#btnEditCmt-"+ id).hide();
+    // show comment input form
+    var html = '<form class="edit-form" id="edit-form-'+id+'">';
+    html += '<div class="form-group">';
+    html += '<textarea id="comment-content-'+id+'" name="content" class="form-control">'+content+'</textarea>'
+    html +='</div>';
+    html += '<div class="form-group">';
+    html += '<button type="button" class="btn btn-primary" onclick="editComment('+id+')">Save</button>';
+    html += '<button type="button" class="btn btn-danger" onclick="cancelEdit('+id+')">Cancel</button>';
+    html += '</div>';
+    html += '</form>';
+    $("#comment-wrapper-"+ id).append(html);   
+}
+function cancelEdit(id) {
+    $("#comment-detail-"+ id).show();
+    $("#btnEditCmt-"+ id).show();
+    $("#edit-form-"+ id).remove();   
+}

@@ -46,8 +46,9 @@ class RatingController extends Controller
     {
         $errors = array();
         $bookCreator = Book::find($request->book_id)->created_by;
+        $user = Auth::user();
         // authorize 
-        $response = Gate::check('add-rating', Auth::user(), $bookCreator);
+        $response = Gate::allows('add-rating', [$bookCreator]);
         if (!$response) {
             array_push($errors, 'You are not authorized to add rating');
             return back()->withErrors($errors);
@@ -56,17 +57,19 @@ class RatingController extends Controller
         $request->validate([
             'value' => 'required'
         ]);
-        // if (Gate::allows('add-rating', $request)) {
-            $rating = new Rating();
-            $rating->book_id = $request->book_id;
-            $rating->value = $request->value;
-            $rating->created_by = Auth::user()->name;
-            $rating->save();
-            return $rating;
-        // } else {
-
-        // }
-        
+        $rated = Rating::where('book_id', "=", $request->book_id)->where('created_by', "=", $user->name)->first();
+        // nếu đã có rated thì chỉ update thôi
+        if ($rated != null) {
+            $rated->value = $request->value;
+            $rated->save();
+            return $rated;
+        }
+        $rating = new Rating();
+        $rating->book_id = $request->book_id;
+        $rating->value = $request->value;
+        $rating->created_by = Auth::user()->name;
+        $rating->save();
+        return $rating;        
     }
 
     /**

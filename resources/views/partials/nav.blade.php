@@ -13,12 +13,17 @@
             <!-- Left Side Of Navbar -->
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/dashboard/books">All Books</a>
+                    <a class="nav-link" href="/dashboard/books/create">Add book</a>
                 </li>
-                <li class="nav-item">
-                    {{-- <a class="nav-link" href="{{ route('/users') }}">User</a>
-                    --}}
-                </li>
+                <?php 
+                    $user = Auth::user();
+                    $isAdmin = $user->role === 1;
+                ?>
+                @if ($isAdmin)
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('users.index') }}">Manage Users</a>
+                    </li>
+                @endif
             </ul>
 
             <!-- Right Side Of Navbar -->
