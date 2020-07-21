@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +19,10 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
-        return view('admin/users')->with('users', $users);
+        if (count($users) <= 0) return redirect()->route('register');
+        else {
+            return view('admin/users')->with('users', $users);
+        }
     }
 
     /**
@@ -70,7 +77,26 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // get back the object to update
+        $user = User::find($id);
+        // validate form data
+        $request->validate([
+            'name' => 'bail|required|max:255',
+            'email' => [
+                'required',
+                'email',
+                'unique:users,email,' .$id
+            ],
+            'banned' => 'required|boolean',
+            'role' => 'required|regex:/^[12]$/'
+        ]);
+        $user->name=$request->name;
+        $user->email=$request->email;
+        $user->banned=$request->banned;
+        $user->role=$request->role;
+        // save update on users table
+        $user->save();
+        return $user->id;
     }
 
     /**
@@ -81,6 +107,8 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+         // get back the object to delete
+         $user = User::find($id);
+         $user->delete();
     }
 }

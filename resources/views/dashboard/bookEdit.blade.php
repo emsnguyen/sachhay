@@ -9,7 +9,7 @@
                 // var html = '<img src=' + '"' + e.target.result + '"' + ' id="cover-image"/>';
                 $("#cover-image").attr('src', e.target.result);
             }
-            $("input[name=isImageUpdated]").val(true);
+            $("input[name=isImageUpdated]").val("1");
             reader.readAsDataURL(input.files[0]);
         }
     }
@@ -41,7 +41,7 @@
         @method('PUT')
         <div class="form-group">
             <div><label>Update Cover Image:</label></div>
-            <input type="hidden" value=false name="isImageUpdated"/>
+            <input type="hidden" value="0" name="isImageUpdated"/>
             @if(is_object($book->images))
                 @foreach($book->images as $image)
                     <img id="cover-image" src="{{ asset($image->url) }}" alt="book cover" />

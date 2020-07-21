@@ -145,8 +145,8 @@ class BookController extends Controller
                 'unique:books,isbn,' . $id
             ],
             'author' => 'required|max:255',
-            'review' => 'required|max:10000',
-            'file'=> 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            'review' => 'required|max:10000'
+            // 'file'=> 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
         $book->title=$request->title;
         $book->author=$request->author;
@@ -157,7 +157,7 @@ class BookController extends Controller
         $book->save();
 
         // update image if it has been changed
-        if ($request->isImageUpdated) {
+        if ($request->isImageUpdated == "1") {
             // delete old image
             $imageIds = array();
             foreach($book->images as $image) {

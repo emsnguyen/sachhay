@@ -36,14 +36,14 @@ $(document).ready(function () {
 
                 // add edit and comment button 
                 html += '<li class="list-inline-item">';
-                html += '<button class="btn btn-success btn-sm rounded-0 btnEditCmt" onclick="showEditCommentForm('+data.id+ ','+data.content +')" type="button" data-toggle="tooltip" ';
+                html += '<button class="btn btn-success btn-sm rounded-0 btnEditCmt" onclick="showEditCommentForm('+data.id+ ',\''+data.content +'\')" type="button" data-toggle="tooltip" ';
                 html += 'id="btnEditCmt-' + data.id + '"';
                 html += 'data-placement="top" title="Edit"><i class="fa fa-edit"></i></button>';
                 html += '</li>';
                 html += '<li class="list-inline-item">';
-                html += '<button class="btn btn-danger btn-sm rounded-0 onclick="deleteComment('+data.id+')" btnDeleteCmt" type="button" data-toggle="tooltip"';
+                html += '<button class="btn btn-danger btn-sm rounded-0" onclick="deleteComment('+data.id+')" type="button" data-toggle="tooltip"';
                 html += 'id="btnDeleteCmt-' + data.id + '"';
-                html += 'data-placement="top" title="Delete"><i class="fa fa-trash"></i></button>';
+                html += 'data-placement="top" title="Delete"><i class="fa fa-trash"></i></button>'; 
                 html += '</li><hr/>';
                 html += '</ul>';
 
