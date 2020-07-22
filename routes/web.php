@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', "BookController@index");
+Route::view('/', "layouts.app");
 Route::group(['prefix'=>'dashboard'], function(){
     Route::view('/','dashboard/dashboard');
     // book routes
