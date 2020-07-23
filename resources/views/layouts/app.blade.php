@@ -73,9 +73,7 @@
         </nav>
 
         <main class="py-4">
-            <div class="container">
-                <h1>Welcome to Sachhay</h1>
-            </div>
+            @yield('content')
         </main>
     </div>
 </body>
