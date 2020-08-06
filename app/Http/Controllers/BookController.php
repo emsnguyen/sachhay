@@ -10,10 +10,6 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 class BookController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
     /**
      * Display a listing of the resource.
      *
@@ -23,23 +19,7 @@ class BookController extends Controller
     public function index()
     {
         $books = Book::all();
-        return view('dashboard/books')->with('books', $books);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        // authorize 
-        $response = Gate::check('add-book', Auth::user());
-        if (!$response) {
-            array_push($errors, 'You are not authorized to create book');
-            return back()->withErrors($errors);
-        }
-        return view('dashboard/bookCreate');
+        return $books;
     }
 
     /**
@@ -80,7 +60,7 @@ class BookController extends Controller
         $image->book_id = $book->id;
         $image->save();
 
-        return $this->show($book->id);
+        return $this->sendResponse($book, "Book created");
     }
 
     /**
@@ -92,27 +72,7 @@ class BookController extends Controller
     public function show($id)
     {
         $book = Book::find($id);
-        return view('dashboard/bookSingle')->with('book', $book);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        $errors = array();
-        $book = Book::find($id);
-        // authorize 
-        // $response = Gate::check('update-book', [$book]);
-        if (!Gate::check('update-book', [Auth::user(), $book])) {
-            // array_push($errors, 'You are not authorized to edit this book');
-            // return back()->withErrors($errors);
-        } 
-        return view('dashboard/bookEdit')->with('book', $book);
-        
+        return $this->sendResponse($book, "Book detail");
     }
 
     /**
@@ -128,11 +88,8 @@ class BookController extends Controller
         // get back the object to update
         $book = Book::find($id);
         // authorize 
-        // $book->created_by="HKT";
-        // $response = Gate::check('update-book', [Auth::user(), $book]);
         if (!Gate::allows('update-book', [$book])) {
-            array_push($errors, 'You are not authorized to edit this book');
-            return back()->withErrors($errors);
+            $this->sendError('You are not authorized to edit this book', null, 500);
         } 
 
         // validate form data
@@ -197,26 +154,22 @@ class BookController extends Controller
     public function destroy($id)
     {
         $book = Book::find($id);
-        $errors = array();
+        $deletedBook = $book;
         // Authorize
-        // $response = Gate::check('delete-book', Auth::user(), $book);
         if (!Gate::allows('delete-book', [$book])) {
-            array_push($errors, 'You are not authorized to delete this book');
-            return back()->withErrors($errors);
+            $this->sendError('You are not authorized to delete this book', null, 500);
         }   
         if (count($book->comments) > 0 || count($book->ratings) > 0) {
-            array_push($errors, 'This book cannot be deleted because there are already comments and ratings for it');
-            return back()->withErrors($errors);
+            $this->sendError('This book cannot be deleted because there are already comments and ratings for it', null, 500);
         }
         $book->delete();
-        return redirect('dashboard/books')->with('success', 'Successfully deleted your book!');
+        $this->sendResponse($deletedBook, 'Successfully deleted your book!');
     }
 
     public function search(Request $request)
     {
         $query = $request->q;
-        // search like in eloquent laravel
         $books = Book::where('title', 'like', '%'.$query.'%')->orWhere('author', 'like', '%'.$query.'%')->get();
-        return view('dashboard/books')->with('books', $books);
+        $this->sendResponse($books, 200);
     }
 }

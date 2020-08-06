@@ -10,10 +10,6 @@ use Illuminate\Support\Facades\Gate;
 
 class RatingController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
     /**
      * Display a listing of the resource.
      *
@@ -23,17 +19,7 @@ class RatingController extends Controller
     {
         $bookId = $request->bookId;
         $ratings = Rating::where('book_id', $bookId)->get();
-        return $ratings;
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        
+        $this->sendResponse($ratings, null);
     }
 
     /**
@@ -44,14 +30,12 @@ class RatingController extends Controller
      */
     public function store(Request $request)
     {
-        $errors = array();
         $bookCreator = Book::find($request->book_id)->created_by;
         $user = Auth::user();
         // authorize 
         $response = Gate::allows('add-rating', [$bookCreator]);
         if (!$response) {
-            array_push($errors, 'You are not authorized to add rating');
-            return back()->withErrors($errors);
+            $this->sendError('You are not authorized to add rating', null, 500);
         } 
         // validate form data
         $request->validate([
@@ -69,29 +53,7 @@ class RatingController extends Controller
         $rating->value = $request->value;
         $rating->created_by = Auth::user()->name;
         $rating->save();
-        return $rating;        
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $this->sendResponse($rating, "Rating added");  
     }
 
     /**
@@ -108,13 +70,13 @@ class RatingController extends Controller
         // authorize 
         $response = Gate::check('update-rating', Auth::user(), $rating);
         if (!$response) {
-            array_push($errors, 'You are not authorized to update this rating');
-            return back()->withErrors($errors);
+            $this->sendError('You are not authorized to update this rating', null, 500);
         } 
 
         $rating->value = $request->value;
         $rating->updated_by = Auth::user()->name;
         $rating->save();
+        $this->sendResponse($rating, "Rating updated");  
     }
 
     /**
@@ -126,13 +88,12 @@ class RatingController extends Controller
     public function destroy($id)
     {
         $rating = Rating::find($id);
-        $errors = array();
         // authorize 
         $response = Gate::check('delete-rating', Auth::user(), $rating);
         if (!$response) {
-            array_push($errors, 'You are not authorized to delete this rating');
-            return back()->withErrors($errors);
+            $this->sendError('You are not authorized to delete this rating', null, 500);
         } 
         $rating->delete();
+        $this->sendResponse($rating, "Rating deleted");  
     }
 }

@@ -7,10 +7,6 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
     /**
      * Display a listing of the resource.
      *
@@ -19,53 +15,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
-        if (count($users) <= 0) return redirect()->route('register');
-        else {
-            return view('admin/users')->with('users', $users);
-        }
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $this->sendResponse($users, null);
     }
 
     /**
@@ -96,7 +46,7 @@ class UserController extends Controller
         $user->role=$request->role;
         // save update on users table
         $user->save();
-        return $user->id;
+        $this->sendResponse($user, "User updated successfully");
     }
 
     /**
@@ -110,5 +60,6 @@ class UserController extends Controller
          // get back the object to delete
          $user = User::find($id);
          $user->delete();
+         $this->sendResponse($user, "User deleted successfully");
     }
 }
