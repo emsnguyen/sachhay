@@ -20,8 +20,8 @@ class BookController extends Controller
 
     public function index()
     {
-        $books = Book::all();
-        return $books;
+        $books = Book::with('comments', 'ratings', 'images')->get();
+        return $this->sendResponse($books, "Available books");
     }
 
     /**
@@ -73,7 +73,7 @@ class BookController extends Controller
      */
     public function show($id)
     {
-        $book = Book::find($id);
+        $book = Book::with('comments', 'ratings', 'images')->where('id', '=', $id)->get()->first();
         return $this->sendResponse($book, "Book detail");
     }
 

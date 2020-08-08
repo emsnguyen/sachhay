@@ -11,6 +11,7 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
     public function sendResponse($result , $message){
+        return $result;
         $response = [
             'success' => true ,
             'data' => $result,
@@ -25,9 +26,9 @@ class Controller extends BaseController
             'message' => $error
         ];
         if (!empty($errorMessages)) {
-            $response['date'] = $errorMessages;
+            $response['errors'] = $errorMessages;
         }
         return response()->json($response , $code);
-        
+
     }
 }
