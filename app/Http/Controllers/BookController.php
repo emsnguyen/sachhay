@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
+use Tymon\JWTAuth\Facades\JWTAuth;
+
 class BookController extends Controller
 {
     /**
@@ -15,7 +17,7 @@ class BookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    
+
     public function index()
     {
         $books = Book::all();
@@ -39,7 +41,7 @@ class BookController extends Controller
             'review' => 'required|max:10000',
             'file'=> 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
-        $fileName = time().'.'.$request->file->extension();  
+        $fileName = time().'.'.$request->file->extension();
         $request->file->move(public_path().'/bookcovers/', $fileName);
 
         // create object for saving
@@ -49,8 +51,8 @@ class BookController extends Controller
         $book->author = $request->author;
         $book->publisher = $request->publisher;
         $book->review = $request->review;
-        $book->created_by=Auth::user()->name;
-        
+        $book->created_by = JWTAuth::parseToken()->authenticate()->name;
+
         // save to book table
         $book->save();
 
@@ -87,10 +89,10 @@ class BookController extends Controller
         $errors = array();
         // get back the object to update
         $book = Book::find($id);
-        // authorize 
+        // authorize
         if (!Gate::allows('update-book', [$book])) {
             $this->sendError('You are not authorized to edit this book', null, 500);
-        } 
+        }
 
         // validate form data
         $request->validate([
@@ -109,7 +111,7 @@ class BookController extends Controller
         $book->author=$request->author;
         $book->publisher=$request->publisher;
         $book->review=$request->review;
-        $book->updated_by=Auth::user()->name;
+        $book->updated_by=JWTAuth::parseToken()->authenticate()->name;
         // save update on books table
         $book->save();
 
@@ -129,20 +131,20 @@ class BookController extends Controller
                 // delete from public path (local storage)
                 File::delete($oldUrl);
             }
-            
+
             // save new image
             // save to local storage
-            $fileName = time().'.'.$request->file->extension();  
+            $fileName = time().'.'.$request->file->extension();
             $request->file->move(public_path().'/bookcovers/', $fileName);
-            
+
             // save to image table
             $image = new Image();
             $image->url = 'bookcovers/'.$fileName;
             $image->book_id = $book->id;
-            $image->save();     
+            $image->save();
         }
         return $this->show($book->id);
-        
+
     }
 
     /**
@@ -158,7 +160,7 @@ class BookController extends Controller
         // Authorize
         if (!Gate::allows('delete-book', [$book])) {
             $this->sendError('You are not authorized to delete this book', null, 500);
-        }   
+        }
         if (count($book->comments) > 0 || count($book->ratings) > 0) {
             $this->sendError('This book cannot be deleted because there are already comments and ratings for it', null, 500);
         }

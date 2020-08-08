@@ -20,7 +20,7 @@ Route::group(['prefix'=>'dashboard'], function(){
     // book routes
     Route::get('books/search', 'BookController@search')->name('books.search');
     Route::resource('books', 'BookController');
-    
+
     // comment routes
     Route::post('comments', 'CommentController@store');
     Route::resource('comments', 'CommentController')->except('store');
@@ -31,9 +31,7 @@ Route::group(['prefix'=>'dashboard'], function(){
     Route::get('users/create/{id}', 'UserController@create');
     Route::resource('users', 'UserController');
     Route::get('users/search', 'UserController@search');
-    
-});
 
-Auth::routes();
+});
 
 Route::get('/home', 'HomeController@index')->name('home');
