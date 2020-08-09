@@ -7,6 +7,7 @@ use App\Models\Rating;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class RatingController extends Controller
 {
@@ -31,29 +32,21 @@ class RatingController extends Controller
     public function store(Request $request)
     {
         $bookCreator = Book::find($request->book_id)->created_by;
-        $user = Auth::user();
-        // authorize 
+        // authorize
         $response = Gate::allows('add-rating', [$bookCreator]);
         if (!$response) {
             $this->sendError('You are not authorized to add rating', null, 500);
-        } 
+        }
         // validate form data
         $request->validate([
             'value' => 'required'
         ]);
-        $rated = Rating::where('book_id', "=", $request->book_id)->where('created_by', "=", $user->name)->first();
-        // nếu đã có rated thì chỉ update thôi
-        if ($rated != null) {
-            $rated->value = $request->value;
-            $rated->save();
-            return $rated;
-        }
         $rating = new Rating();
         $rating->book_id = $request->book_id;
         $rating->value = $request->value;
-        $rating->created_by = Auth::user()->name;
+        $rating->created_by = JWTAuth::user()->username;
         $rating->save();
-        $this->sendResponse($rating, "Rating added");  
+        return $rating;
     }
 
     /**
@@ -66,17 +59,16 @@ class RatingController extends Controller
     public function update(Request $request, $id)
     {
         $rating = Rating::find($id);
-        $errors = array();
-        // authorize 
-        $response = Gate::check('update-rating', Auth::user(), $rating);
+        // authorize
+        $response = Gate::allows('update-rating', [$rating]);
         if (!$response) {
             $this->sendError('You are not authorized to update this rating', null, 500);
-        } 
+        }
 
         $rating->value = $request->value;
-        $rating->updated_by = Auth::user()->name;
+        $rating->updated_by = JWTAuth::user()->username;
         $rating->save();
-        $this->sendResponse($rating, "Rating updated");  
+        return $rating;
     }
 
     /**
@@ -88,12 +80,12 @@ class RatingController extends Controller
     public function destroy($id)
     {
         $rating = Rating::find($id);
-        // authorize 
-        $response = Gate::check('delete-rating', Auth::user(), $rating);
+        // authorize
+        $response = Gate::allows('delete-rating', [$rating]);
         if (!$response) {
             $this->sendError('You are not authorized to delete this rating', null, 500);
-        } 
+        }
         $rating->delete();
-        $this->sendResponse($rating, "Rating deleted");  
+        $this->sendResponse($rating, "Rating deleted");
     }
 }

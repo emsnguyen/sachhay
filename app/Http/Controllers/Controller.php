@@ -11,7 +11,6 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
     public function sendResponse($result , $message){
-        return $result;
         $response = [
             'success' => true ,
             'data' => $result,

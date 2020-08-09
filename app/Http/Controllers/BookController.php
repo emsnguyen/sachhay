@@ -51,7 +51,7 @@ class BookController extends Controller
         $book->author = $request->author;
         $book->publisher = $request->publisher;
         $book->review = $request->review;
-        $book->created_by = JWTAuth::parseToken()->authenticate()->name;
+        $book->created_by = JWTAuth::user()->username;
 
         // save to book table
         $book->save();
@@ -111,7 +111,7 @@ class BookController extends Controller
         $book->author=$request->author;
         $book->publisher=$request->publisher;
         $book->review=$request->review;
-        $book->updated_by=JWTAuth::parseToken()->authenticate()->name;
+        $book->updated_by=JWTAuth::user()->username;
         // save update on books table
         $book->save();
 
