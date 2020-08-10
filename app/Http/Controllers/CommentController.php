@@ -40,14 +40,14 @@ class CommentController extends Controller
         }
         // validate form data
         $request->validate([
-            'content' => 'required|max:255'
+            'content' => 'required|min:3|max:255'
         ]);
         $comment = new Comment();
         $comment->book_id = $request->book_id;
         $comment->content = $request->content;
         $comment->created_by = JWTAuth::user()->username;
         $comment->save();
-        $this->sendResponse($comment, 'Comment saved');
+        return $comment;
     }
 
     /**
@@ -69,7 +69,7 @@ class CommentController extends Controller
         $comment->content = $request->content;
         $comment->updated_by = JWTAuth::user()->username;
         $comment->save();
-        $this->sendResponse($comment, 'Comment updated');
+        return $comment;
     }
 
     /**

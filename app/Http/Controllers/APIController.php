@@ -73,4 +73,14 @@ class APIController extends Controller
             return $this->sendError('User logged out successfully', null, 500);
         }
     }
+
+     /**
+     * Refresh a token.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function refresh()
+    {
+        return $this->sendResponse(auth()->refresh(), "Token refreshed");
+    }
 }

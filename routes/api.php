@@ -13,11 +13,15 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::group([
+    'prefix' => 'auth'
 
-Route::post('auth/register', 'APIController@register')->name('register');
-Route::post('auth/login', 'APIController@login')->name('login');
-Route::post('auth/logout', 'APIController@logout')->name('logout');
-
+], function () {
+    Route::post('register', 'APIController@register')->name('register');
+    Route::post('login', 'APIController@login')->name('login');
+    Route::post('logout', 'APIController@logout')->name('logout');
+    Route::post('refresh', 'APIController@refresh')->name('refresh');
+});
 Route::middleware('jwt.auth')->group( function(){
     // book routes
     Route::get('books/search', 'BookController@search')->name('books.search');
