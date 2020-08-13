@@ -31,16 +31,18 @@ class RatingController extends Controller
      */
     public function store(Request $request)
     {
+        // validate form data
+        $request = $request->validate([
+            'value' => 'required'
+        ]);
+dd($request);
         $bookCreator = Book::find($request->book_id)->created_by;
         // authorize
         $response = Gate::allows('add-rating', [$bookCreator]);
         if (!$response) {
             $this->sendError('You are not authorized to add rating', null, 500);
         }
-        // validate form data
-        $request->validate([
-            'value' => 'required'
-        ]);
+
         $rating = new Rating();
         $rating->book_id = $request->book_id;
         $rating->value = $request->value;

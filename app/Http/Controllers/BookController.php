@@ -32,16 +32,20 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request);
         // validate form data
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'bail|required|max:255',
             'author' => 'required|max:255',
             'isbn' => 'unique:books|max:255',
             'author' => 'required|max:255',
             'review' => 'required|max:10000',
-            'file'=> 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            'images'=> 'bail|required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
-        $fileName = time().'.'.$request->file->extension();
+
+        dd($validated);
+
+        $fileName = time().'.'.$request->images->extension();
         $request->file->move(public_path().'/bookcovers/', $fileName);
 
         // create object for saving
