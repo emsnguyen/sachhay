@@ -32,10 +32,9 @@ class RatingController extends Controller
     public function store(Request $request)
     {
         // validate form data
-        $request = $request->validate([
+        $request->validate([
             'value' => 'required'
         ]);
-dd($request);
         $bookCreator = Book::find($request->book_id)->created_by;
         // authorize
         $response = Gate::allows('add-rating', [$bookCreator]);

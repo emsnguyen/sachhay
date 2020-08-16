@@ -22,7 +22,7 @@ Route::group([
     Route::post('logout', 'APIController@logout')->name('logout');
     Route::post('refresh', 'APIController@refresh')->name('refresh');
 });
-// Route::middleware('jwt.auth')->group( function(){
+Route::middleware('jwt.auth')->group( function(){
     // book routes
     Route::get('books/search', 'BookController@search')->name('books.search');
     Route::resource('books', 'BookController');
@@ -34,4 +34,4 @@ Route::group([
     Route::get('users/create/{id}', 'UserController@create');
     Route::resource('users', 'UserController');
     Route::get('users/search', 'UserController@search');
-// } );
+} );

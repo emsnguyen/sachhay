@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class BookController extends Controller
@@ -32,7 +33,6 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request);
         // validate form data
         $validated = $request->validate([
             'title' => 'bail|required|max:255',
@@ -43,10 +43,9 @@ class BookController extends Controller
             'images'=> 'bail|required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
-        dd($validated);
-
+        $image = $request->all()['images'];
         $fileName = time().'.'.$request->images->extension();
-        $request->file->move(public_path().'/bookcovers/', $fileName);
+        Storage::disk('public')->putFileAs('bookcovers', $image, $fileName);
 
         // create object for saving
         $book = new Book();
