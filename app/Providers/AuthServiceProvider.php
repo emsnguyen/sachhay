@@ -38,56 +38,56 @@ class AuthServiceProvider extends ServiceProvider
             // user can update/ delete book only if he is not banned and (he is admin or book creator)
             $isBanned = $user->banned;
             $isAdmin = $user->role === 1;
-            $isBookCreator = $book->created_by === $user->name;
+            $isBookCreator = $book->created_by === $user->username;
             return !$isBanned && ($isAdmin || $isBookCreator);
         });
         Gate::define('delete-book', function ($user, $book) {
             // user can update/ delete book only if he is not banned and (he is admin or book creator)
             $isBanned = $user->banned;
             $isAdmin = $user->role === 1;
-            $isBookCreator = $book->created_by === $user->name;
+            $isBookCreator = $book->created_by === $user->username;
             return !$isBanned && ($isAdmin || $isBookCreator);
         });
         Gate::define('update-comment', function ($user, Comment $comment) {
             // user can update comment only if he is not banned and (he is admin or comment creator)
             $isBanned = $user->banned;
             $isAdmin = $user->role === 1;
-            $isCommentCreator = $comment->created_by === $user->name;
+            $isCommentCreator = $comment->created_by === $user->username;
             return !$isBanned && ($isAdmin || $isCommentCreator);
         });
         Gate::define('delete-comment', function ($user, Comment $comment) {
             // user can delete comment only if he is not banned and (he is admin or comment creator)
             $isBanned = $user->banned;
             $isAdmin = $user->role === 1;
-            $isCommentCreator = $comment->created_by === $user->name;
+            $isCommentCreator = $comment->created_by === $user->username;
             return !$isBanned && ($isAdmin || $isCommentCreator);
         });
         Gate::define('add-rating', function (User $user, $bookCreator) {
             // user can add rating/comment only if he is not banned and he is admin and he is not book creator
             $isBanned = $user->banned;
             $isAdmin = $user->role === 1;
-            $isBookCreator = $bookCreator === $user->name;
+            $isBookCreator = $bookCreator === $user->username;
             return $isAdmin || (!$isBanned && !$isBookCreator);
         });
         Gate::define('add-comment', function (User $user, $bookCreator) {
             // user can add rating/comment only if he is not banned and he is admin and he is not book creator
             $isBanned = $user->banned;
             $isAdmin = $user->role === 1;
-            $isBookCreator = $bookCreator === $user->name;
+            $isBookCreator = $bookCreator === $user->username;
             return $isAdmin || (!$isBanned && !$isBookCreator);
         });
         Gate::define('update-rating', function (User $user, Rating $rating) {
             // user can update rating only if he is not banned and (he is admin or comment creator)
             $isBanned = $user->banned;
             $isAdmin = $user->role === 1;
-            $isRatingCreator = $rating->created_by === $user->name;
+            $isRatingCreator = $rating->created_by === $user->username;
             return !$isBanned && ($isAdmin || $isRatingCreator);
         });
         Gate::define('delete-rating', function (User $user, Rating $rating) {
             // user can delete rating only if he is not banned and (he is admin or comment creator)
             $isBanned = $user->banned;
             $isAdmin = $user->role === 1;
-            $isRatingCreator = $rating->created_by === $user->name;
+            $isRatingCreator = $rating->created_by === $user->username;
             return !$isBanned && ($isAdmin || $isRatingCreator);
         });
     }

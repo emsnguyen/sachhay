@@ -4,8 +4,13 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegistrationFormRequest extends FormRequest
+class CreateBookRequest extends FormRequest
 {
+    /**
+     * @var mixed
+     */
+    private $images;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -24,10 +29,12 @@ class RegistrationFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string',
-            'username' => 'required|string|unique:users',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:6|max:10'
+            'title' => 'bail|required|max:255',
+            'author' => 'required|max:255',
+            'isbn' => 'unique:books|max:255',
+            'publisher' => 'required|max:255',
+            'review' => 'required|max:10000',
+            'images'=> 'bail|required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ];
     }
 }

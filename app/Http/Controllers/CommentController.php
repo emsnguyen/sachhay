@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Comment;
+use App\Repositories\CommentRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -11,17 +12,13 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CommentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request)
+    protected $commentRepository;
+
+    public function __construct(CommentRepository $commentRepository)
     {
-        $bookId = $request->bookId;
-        $comments = Comment::where('book_id', $bookId)->get();
-        $this->sendResponse($comments, null);
+        $this->commentRepository = $commentRepository;
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -34,7 +31,6 @@ class CommentController extends Controller
         $bookCreator = Book::find($request->book_id)->created_by;
 
         // authorize
-        // $response = Gate::check('add-comment', Auth::user(), $bookCreator);
         if (!Gate::allows('add-comment', [$bookCreator]))  {
             $this->sendError('You are not authorized to add comment', null, 500);
         }
@@ -42,11 +38,7 @@ class CommentController extends Controller
         $request->validate([
             'content' => 'required|min:3|max:255'
         ]);
-        $comment = new Comment();
-        $comment->book_id = $request->book_id;
-        $comment->content = $request->content;
-        $comment->created_by = JWTAuth::user()->username;
-        $comment->save();
+        $comment = $this->commentRepository->create([$request]);
         return $comment;
     }
 
@@ -60,15 +52,12 @@ class CommentController extends Controller
     public function update(Request $request, $id)
     {
         // get back the object to update
-        $comment = Comment::find($id);
+        $comment = $this->commentRepository->show($id);
         // authorize
         if (!Gate::allows('update-comment', [$comment])) {
             $this->sendError('You are not authorized to update this comment', null, 500);
         }
-        $comment = Comment::find($id);
-        $comment->content = $request->content;
-        $comment->updated_by = JWTAuth::user()->username;
-        $comment->save();
+        $comment = $this->commentRepository->update([$request->all()], $id);
         return $comment;
     }
 

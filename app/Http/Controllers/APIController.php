@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RegistrationFormRequest;
+use App\Repositories\UserRepository;
 use App\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -14,6 +16,13 @@ class APIController extends Controller
     /**
      * @var bool
      */
+    protected $userRepository;
+
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     public function showLoginForm() {
         return view('auth/login');
     }
@@ -21,36 +30,17 @@ class APIController extends Controller
         return view('auth/register');
     }
 
-    public function register(Request $request) {
-        $validator = Validator::make($request -> all(),[
-            'email' => 'required|string|email|max:255|unique:users',
-            'username'=> 'required|unique:users',
-            'name'=> 'required',
-            'password'=> 'required'
-           ]);
+    public function register(RegistrationFormRequest $request) {
+        $user = $this->userRepository->create([$request]);
+        $token = JWTAuth::fromUser($user);
 
-           if ($validator -> fails()) {
-               return $this->sendError("Validation fails", $validator->errors(), 401);
-           }
-
-           User::create([
-               'name' => $request->get('name'),
-               'username'=> $request->get('username'),
-               'email' => $request->get('email'),
-               'password'=> bcrypt($request->get('password')),
-           ]);
-           $user = User::first();
-           $token = JWTAuth::fromUser($user);
-
-           return $this->sendResponse(compact('token'), "Registered success");
+        return $this->sendResponse(compact('token'), "Registered success");
     }
 
     public function login(Request $request) {
         $credentials = $request->only('username', 'password');
         try {
             if (! $token = JWTAuth::attempt($credentials)) {
-                // setcookie('token', $token, time() + (86400 * 30), "/");
-                // return redirect("dashboard/books")->with('token', $token);
                 return $this->sendError('invalid username and password', null, 401);
             }
         } catch (Exception $e) {
