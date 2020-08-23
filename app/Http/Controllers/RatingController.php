@@ -2,91 +2,54 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Book;
-use App\Models\Rating;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Http\Requests\CreateRatingRequest;
+use App\Http\Requests\UpdateRatingRequest;
+use App\Services\RatingService;
+use Illuminate\Http\Response;
 
 class RatingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request)
+    protected $ratingService;
+    public function __construct(RatingService $ratingService)
     {
-        $bookId = $request->bookId;
-        $ratings = Rating::where('book_id', $bookId)->get();
-        $this->sendResponse($ratings, null);
+        $this->ratingService = $ratingService;
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param CreateRatingRequest $request
+     * @return Response
+     * @throws \Exception
      */
-    public function store(Request $request)
+    public function store(CreateRatingRequest $request)
     {
-        // validate form data
-        $request->validate([
-            'value' => 'required'
-        ]);
-        $bookCreator = Book::find($request->book_id)->created_by;
-        // authorize
-        $response = Gate::allows('add-rating', [$bookCreator]);
-        if (!$response) {
-            $this->sendError('You are not authorized to add rating', null, 500);
-        }
-
-        $rating = new Rating();
-        $rating->book_id = $request->book_id;
-        $rating->value = $request->value;
-        $rating->created_by = JWTAuth::user()->username;
-        $rating->save();
-        return $rating;
+        return $this->ratingService->create($request);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param UpdateRatingRequest $request
+     * @param int $id
+     * @return Response
+     * @throws \Exception
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRatingRequest $request, $id)
     {
-        $rating = Rating::find($id);
-        // authorize
-        $response = Gate::allows('update-rating', [$rating]);
-        if (!$response) {
-            $this->sendError('You are not authorized to update this rating', null, 500);
-        }
-
-        $rating->value = $request->value;
-        $rating->updated_by = JWTAuth::user()->username;
-        $rating->save();
-        return $rating;
+        return $this->ratingService->update($request, $id);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return void
+     * @throws \Exception
      */
     public function destroy($id)
     {
-        $rating = Rating::find($id);
-        // authorize
-        $response = Gate::allows('delete-rating', [$rating]);
-        if (!$response) {
-            $this->sendError('You are not authorized to delete this rating', null, 500);
-        }
-        $rating->delete();
-        $this->sendResponse($rating, "Rating deleted");
+        $this->ratingService->delete($id);
+        $this->sendResponse($id, "Rating deleted");
     }
 }

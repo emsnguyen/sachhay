@@ -12,22 +12,26 @@ class RatingRepository implements RepositoryInterface
 
     public function create(array $data){
         $request = $data[0];
-        $rating = Rating::create([
-            'title' => $request->get('title'),
-            'isbn'=> $request->get('isbn'),
-            'author'=> $request->get('author'),
-            'publisher'=> $request->get('publisher'),
-            'review'=> $request->get('review'),
+        return Rating::create([
+            'book_id'=>$request->input('book_id'),
+            'value'=>$request->input('value'),
+            'created_by'=>JWTAuth::user()->username
         ]);
-        return $rating;
     }
 
     public function update(array $data, $id){
+        $request = $data[0];
+        return Rating::where('id', $id)->update(array(
+            'value' => $request->input('value'),
+            'updated_by' => JWTAuth::user()->username
+        ));
     }
 
     public function delete($id){
+        Rating::destroy($id);
     }
 
     public function show($id){
+        return Rating::find($id);
     }
 }

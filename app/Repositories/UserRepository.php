@@ -15,8 +15,7 @@ class UserRepository implements RepositoryInterface
             'email' => $request->get('email'),
             'password'=> bcrypt($request->get('password')),
         ]);
-        $user = User::first();
-        return $user;
+        return User::first();
     }
 
     public function update(array $data, $id){

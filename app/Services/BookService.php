@@ -5,7 +5,6 @@ use App\Models\Book;
 use App\Models\Image;
 use App\Repositories\BookRepository;
 use App\Repositories\ImageRepository;
-use http\Env\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -49,6 +48,7 @@ class BookService
      * @param UpdateBookRequest $request
      * @param $id
      * @return mixed
+     * @throws \Exception
      */
     public function update(UpdateBookRequest $request, $id) {
         $book = $this->bookRepository->show($id);
@@ -61,7 +61,7 @@ class BookService
         $this->bookRepository->update([$request], $id);
 
         // update image if it has been changed
-        if ($request->images) {
+        if ($request->input('images')) {
             // delete old image
             $imageIds = array();
             foreach($book->images as $image) {
@@ -99,7 +99,7 @@ class BookService
         if (count($book->comments) > 0 || count($book->ratings) > 0) {
             $this->sendError('This book cannot be deleted because there are already comments and ratings for it', null, 500);
         }
-        $book->delete();
+        $this->bookRepository->delete($id);
     }
 
     /**
@@ -119,8 +119,7 @@ class BookService
     {
         $fileName = time() . '.' . $images->extension();
         Storage::disk('public')->putFileAs('bookcovers', $images, $fileName);
-        $url = Storage::disk('public')->url('bookcovers/' . $fileName);
-        return $url;
+        return Storage::disk('public')->url('bookcovers/' . $fileName);
     }
 
     /**

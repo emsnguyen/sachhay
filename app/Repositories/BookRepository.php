@@ -13,7 +13,7 @@ class BookRepository implements RepositoryInterface
     public function create(array $data)
     {
         $request = $data[0];
-        $book = Book::create([
+        return Book::create([
             'title' => $request->get('title'),
             'isbn' => $request->get('isbn'),
             'author' => $request->get('author'),
@@ -21,13 +21,12 @@ class BookRepository implements RepositoryInterface
             'review' => $request->get('review'),
             'created_by' => JWTAuth::user()->username,
         ]);
-        return $book;
     }
 
     public function update(array $data, $id)
     {
         $request = $data[0];
-        $book = Book::where('id', $id)
+        return Book::where('id', $id)
             ->update([
                 'title' => $request->title,
                 'isbn' => $request->isbn,
@@ -36,13 +35,11 @@ class BookRepository implements RepositoryInterface
                 'review' => $request->review,
                 'updated_by' => JWTAuth::user()->username,
             ]);
-        return $book;
     }
 
     public function delete($id)
     {
-        $book = Book::find($id);
-        $book->delete();
+        Book::destroy($id);
     }
 
     public function show($id)

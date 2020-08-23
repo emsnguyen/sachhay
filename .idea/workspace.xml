@@ -77,42 +77,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cc7f432d-24f4-41bf-af00-3cffd67b2420" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sachhay.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/symfony2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/SearchBookRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Services/BookService.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/bookcovers/1597898526.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/bookcovers/1597898594.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/bookcovers/1597898681.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/bookcovers/1597898712.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/bookcovers/1597898748.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/bookcovers/1597898932.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/bookcovers/1597899305.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/bookcovers/1597905354.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/bookcovers/1597906295.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/bookcovers/1597906369.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/bookcovers/1597906409.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/bookcovers/1597906696.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/bookcovers/1597906958.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/bookcovers/1597910044.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Exceptions/Handler.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Exceptions/Handler.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/CreateCommentRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/CreateRatingRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/LogoutRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/UpdateCommentRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/UpdateRatingRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Services/CommentService.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Services/RatingService.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Services/UserService.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/APIController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/APIController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BookController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BookController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/CommentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/CommentController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Requests/RegistrationFormRequest.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Requests/RegistrationFormRequest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Image.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Image.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Providers/AuthServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Providers/AuthServiceProvider.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Repositories/RepositoryInterface.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Repositories/RepositoryInterface.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/filesystems.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/filesystems.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/RatingController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/RatingController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Repositories/BookRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Repositories/BookRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Repositories/CommentRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Repositories/CommentRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Repositories/RatingRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Repositories/RatingRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Repositories/UserRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Repositories/UserRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Services/BookService.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Services/BookService.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ComposerSettings" synchronizationState="SYNCHRONIZE">
+  <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
     <execution />
   </component>
@@ -254,11 +243,13 @@
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="preferences.keymap" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\Code\Laravel\sachhay\app\Http\Requests" />
+      <recent name="D:\Code\Laravel\sachhay\app\Services" />
     </key>
   </component>
   <component name="RunManager">
@@ -275,7 +266,9 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1597897453090</updated>
-      <workItem from="1597897455706" duration="14033000" />
+      <workItem from="1597897455706" duration="14106000" />
+      <workItem from="1597937665669" duration="601000" />
+      <workItem from="1598152331907" duration="5155000" />
     </task>
     <servers />
   </component>
@@ -292,23 +285,32 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="413" y="124" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1597917042350">
+    <state x="137" y="10" width="1092" height="728" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1598158256970">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="413" y="124" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1366.738@0.0.1366.738" timestamp="1597917042350" />
+    <state x="137" y="10" width="1092" height="728" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.738@0.0.1366.738" timestamp="1598158256970" />
+    <state x="388" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1598156612428">
+      <screen x="0" y="0" width="1366" height="738" />
+    </state>
+    <state x="388" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.738@0.0.1366.738" timestamp="1598156612428" />
+    <state x="413" y="124" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1598156945902">
+      <screen x="0" y="0" width="1366" height="738" />
+    </state>
+    <state x="413" y="124" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1366.738@0.0.1366.738" timestamp="1598156945902" />
     <state x="502" y="143" key="#com.jetbrains.php.refactoring.extractMethod.PhpExtractMethodDialog#method0" timestamp="1597917498615">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="502" y="143" key="#com.jetbrains.php.refactoring.extractMethod.PhpExtractMethodDialog#method0/0.0.1366.738@0.0.1366.738" timestamp="1597917498615" />
-    <state x="502" y="76" key="#com.jetbrains.php.refactoring.extractMethod.PhpExtractMethodDialog#method1" timestamp="1597917194346">
+    <state x="502" y="76" key="#com.jetbrains.php.refactoring.extractMethod.PhpExtractMethodDialog#method1" timestamp="1598154439194">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="502" y="76" key="#com.jetbrains.php.refactoring.extractMethod.PhpExtractMethodDialog#method1/0.0.1366.738@0.0.1366.738" timestamp="1597917194346" />
+    <state x="502" y="76" key="#com.jetbrains.php.refactoring.extractMethod.PhpExtractMethodDialog#method1/0.0.1366.738@0.0.1366.738" timestamp="1598154439194" />
     <state x="184" y="14" key="SettingsEditor" timestamp="1597907018304">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -321,9 +323,9 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="339" y="165" key="run.anything.popup/0.0.1366.738@0.0.1366.738" timestamp="1597909773873" />
-    <state x="346" y="59" width="672" height="678" key="search.everywhere.popup" timestamp="1597919896297">
+    <state x="346" y="59" width="672" height="678" key="search.everywhere.popup" timestamp="1598159000016">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="346" y="59" width="672" height="678" key="search.everywhere.popup/0.0.1366.738@0.0.1366.738" timestamp="1597919896297" />
+    <state x="346" y="59" width="672" height="678" key="search.everywhere.popup/0.0.1366.738@0.0.1366.738" timestamp="1598159000016" />
   </component>
 </project>

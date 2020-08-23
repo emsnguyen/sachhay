@@ -2,62 +2,42 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LogoutRequest;
 use App\Http\Requests\RegistrationFormRequest;
-use App\Repositories\UserRepository;
-use App\User;
-use Exception;
+use App\Services\UserService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class APIController extends Controller
 {
-    /**
-     * @var bool
-     */
-    protected $userRepository;
+    protected $userService;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserService $userService)
     {
-        $this->userRepository = $userRepository;
-    }
-
-    public function showLoginForm() {
-        return view('auth/login');
-    }
-    public function showRegisterForm() {
-        return view('auth/register');
+        $this->userService = $userService;
     }
 
     public function register(RegistrationFormRequest $request) {
-        $user = $this->userRepository->create([$request]);
-        $token = JWTAuth::fromUser($user);
-
+        $token = $this->userService->register($request);
         return $this->sendResponse(compact('token'), "Registered success");
     }
 
     public function login(Request $request) {
-        $credentials = $request->only('username', 'password');
         try {
-            if (! $token = JWTAuth::attempt($credentials)) {
-                return $this->sendError('invalid username and password', null, 401);
-            }
-        } catch (Exception $e) {
-            return $this->sendError('could not create token', null, 500);
+            $token = $this->userService->login($request);
+        } catch (\Exception $e) {
+            $this->sendError("Login failed", 401);
         }
-        $user = JWTAuth::user();
+        $user = $this->userService->getUser();
         return $this->sendResponse(compact('token', 'user'), "Login with JWT succeeded");
     }
 
-    public function logout(Request $request)
+    public function logout(LogoutRequest $request)
     {
-        $this->validate($request, [
-            'token' => 'required'
-        ]);
-
         try {
-            JWTAuth::invalidate($request->token);
+            JWTAuth::invalidate($request->input('token'));
             return $this->sendResponse(null, 'User logged out successfully');
         } catch (JWTException $exception) {
             return $this->sendError('User logged out successfully', null, 500);
@@ -67,7 +47,7 @@ class APIController extends Controller
      /**
      * Refresh a token.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function refresh()
     {
