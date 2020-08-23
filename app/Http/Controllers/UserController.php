@@ -2,51 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
+use App\Http\Requests\UpdateUserRequest;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return void
-     */
-    public function index()
+    protected $userService;
+    public function __construct(UserService $userService)
     {
-        $users = User::all();
-        $this->sendResponse($users, null);
+        $this->userService = $userService;
+    }
+
+    //$sortType, $sortDirection, $pageIndex, $pageSize
+    public function index(Request $request)
+    {
+        $users = $this->userService->all($request);
+        return $this->sendResponse($users, "All users");
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param UpdateUserRequest $request
      * @param int $id
      * @return void
      */
-    public function update(Request $request, $id)
+    public function update(UpdateUserRequest $request, $id)
     {
-        // get back the object to update
-        $user = User::find($id);
-        // validate form data
-        $request->validate([
-            'name' => 'bail|required|max:255',
-            'email' => [
-                'required',
-                'email',
-                'unique:users,email,' .$id
-            ],
-            'banned' => 'required|boolean',
-            'role' => 'required|regex:/^[12]$/'
-        ]);
-        $user->name=$request->name;
-        $user->email=$request->email;
-        $user->banned=$request->banned;
-        $user->role=$request->role;
-        // save update on users table
-        $user->save();
-        $this->sendResponse($user, "User updated successfully");
+        $user = $this->userService->update($request, $id);
+        return $this->sendResponse($user, "User updated successfully");
     }
 
     /**
@@ -57,9 +42,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-         // get back the object to delete
-         $user = User::find($id);
-         $user->delete();
-         $this->sendResponse($user, "User deleted successfully");
+         $this->userService->delete($id);
+         return $this->sendResponse($id, "User deleted successfully");
     }
 }

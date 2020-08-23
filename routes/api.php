@@ -31,7 +31,6 @@ Route::middleware('jwt.auth')->group( function(){
     // rating routes
     Route::resource('ratings', 'RatingController');
     // user routes
-    Route::get('users/create/{id}', 'UserController@create');
     Route::resource('users', 'UserController');
-    Route::get('users/search', 'UserController@search');
+    Route::get('users/search', 'UserController@search')->name('users.search');
 } );

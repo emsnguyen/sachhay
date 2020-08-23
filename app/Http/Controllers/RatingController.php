@@ -19,12 +19,13 @@ class RatingController extends Controller
      * Store a newly created resource in storage.
      *
      * @param CreateRatingRequest $request
-     * @return Response
+     * @return void
      * @throws \Exception
      */
     public function store(CreateRatingRequest $request)
     {
-        return $this->ratingService->create($request);
+        $rating = $this->ratingService->create($request);
+        return $this->sendResponse($rating, "Rating updated");
     }
 
     /**
@@ -32,12 +33,13 @@ class RatingController extends Controller
      *
      * @param UpdateRatingRequest $request
      * @param int $id
-     * @return Response
+     * @return void
      * @throws \Exception
      */
     public function update(UpdateRatingRequest $request, $id)
     {
-        return $this->ratingService->update($request, $id);
+        $rating = $this->ratingService->update($request, $id);
+        return $this->sendResponse($rating, "Rating updated");
     }
 
     /**
@@ -50,6 +52,6 @@ class RatingController extends Controller
     public function destroy($id)
     {
         $this->ratingService->delete($id);
-        $this->sendResponse($id, "Rating deleted");
+        return $this->sendResponse($id, "Rating deleted");
     }
 }

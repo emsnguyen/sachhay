@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateBookRequest;
-use App\Http\Requests\SearchBookRequest;
 use App\Http\Requests\UpdateBookRequest;
 use App\Services\BookService;
 use Illuminate\Http\Request;
@@ -11,6 +10,7 @@ use Illuminate\Http\Request;
 class BookController extends Controller
 {
     protected $bookService;
+
     public function __construct(
         BookService $bookService
     )
@@ -38,7 +38,12 @@ class BookController extends Controller
 
     public function update(UpdateBookRequest $request, $id)
     {
-        $this->bookService->update($request, $id);
+        try {
+            $book = $this->bookService->update($request, $id);
+            return $this->sendResponse($book, "Book updated");
+        } catch (\Exception $e) {
+            $this->sendError(\Exception::getMessage, "Book updated");
+        }
     }
 
     public function destroy($id)

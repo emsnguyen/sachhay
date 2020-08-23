@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
 use App\Services\CommentService;
-use Illuminate\Http\Response;
 
 class CommentController extends Controller
 {
@@ -19,12 +18,13 @@ class CommentController extends Controller
      * Store a newly created resource in storage.
      *
      * @param CreateCommentRequest $request
-     * @return Response
+     * @return void
      * @throws \Exception
      */
     public function store(CreateCommentRequest $request)
     {
-        return $this->commentService->create($request);
+        $comment = $this->commentService->create($request);
+        return $this->sendResponse($comment, 'Comment added');
     }
 
     /**
@@ -32,12 +32,13 @@ class CommentController extends Controller
      *
      * @param UpdateCommentRequest $request
      * @param int $id
-     * @return Response
+     * @return void
      * @throws \Exception
      */
     public function update(UpdateCommentRequest $request, $id)
     {
-        return $this->commentService->update($request, $id);
+        $comment = $this->commentService->update($request, $id);
+        return $this->sendResponse($comment, 'Comment updated');
     }
 
     /**
@@ -48,6 +49,6 @@ class CommentController extends Controller
      */
     public function destroy($id)
     {
-        $this->sendResponse($id, 'Comment deleted');
+        return $this->sendResponse($id, 'Comment deleted');
     }
 }

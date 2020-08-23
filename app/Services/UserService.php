@@ -1,4 +1,5 @@
 <?php namespace App\Services;
+use App\Http\Requests\UpdateUserRequest;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -35,7 +36,22 @@ class UserService
         return $token;
     }
 
-    public function getUser() {
+    public function getCurrentUser() {
         return JWTAuth::user();
+    }
+
+    public function all(Request $request)
+    {
+        return $this->userRepository->all();
+    }
+
+    public function update(UpdateUserRequest $request, int $id)
+    {
+        return $this->userRepository->update([$request], $id);
+    }
+
+    public function delete(int $id)
+    {
+        $this->userRepository->delete($id);
     }
 }

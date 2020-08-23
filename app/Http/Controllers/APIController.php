@@ -19,18 +19,20 @@ class APIController extends Controller
         $this->userService = $userService;
     }
 
-    public function register(RegistrationFormRequest $request) {
+    public function register(RegistrationFormRequest $request)
+    {
         $token = $this->userService->register($request);
         return $this->sendResponse(compact('token'), "Registered success");
     }
 
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         try {
             $token = $this->userService->login($request);
         } catch (\Exception $e) {
             $this->sendError("Login failed", 401);
         }
-        $user = $this->userService->getUser();
+        $user = $this->userService->getCurrentUser();
         return $this->sendResponse(compact('token', 'user'), "Login with JWT succeeded");
     }
 
@@ -40,11 +42,11 @@ class APIController extends Controller
             JWTAuth::invalidate($request->input('token'));
             return $this->sendResponse(null, 'User logged out successfully');
         } catch (JWTException $exception) {
-            return $this->sendError('User logged out successfully', null, 500);
+            return $this->sendError('User logged out failed', null, 500);
         }
     }
 
-     /**
+    /**
      * Refresh a token.
      *
      * @return JsonResponse

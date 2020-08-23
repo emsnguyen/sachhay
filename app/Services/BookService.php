@@ -59,29 +59,8 @@ class BookService
 
         DB::beginTransaction();
         $this->bookRepository->update([$request], $id);
+        $this->updateBookImage($request, $book);
 
-        // update image if it has been changed
-        if ($request->input('images')) {
-            // delete old image
-            $imageIds = array();
-            foreach($book->images as $image) {
-                array_push($imageIds, $image->id);
-            }
-            $imageToDelete = $this->imageRepository->findByIdIn($imageIds);
-
-            $this->deleteImageFromStorage($imageToDelete);
-
-            $this->imageRepository->delete($imageToDelete->id);
-
-            // lưu hình ảnh
-            $url = $this->saveImageAndGetUrl($request->images);
-
-            // save to image table
-            $image = new Image();
-            $image->url = $url;
-            $image->book_id = $book->id;
-            $this->imageRepository->create([$image]);
-        }
         DB::commit();
         return $book;
     }
@@ -144,5 +123,36 @@ class BookService
         return Book::where('title', 'like', '%'.$query.'%')
             ->orWhere('author', 'like', '%'.$query.'%')
             ->get();
+    }
+
+    /**
+     * @param UpdateBookRequest $request
+     * @param $book
+     * @return void
+     */
+    public function updateBookImage(UpdateBookRequest $request, $book)
+    {
+        // update image if it has been changed
+        if ($request->input('images')) {
+            // delete old image
+            $imageIds = array();
+            foreach ($book->images as $image) {
+                array_push($imageIds, $image->id);
+            }
+            $imageToDelete = $this->imageRepository->findByIdIn($imageIds);
+
+            $this->deleteImageFromStorage($imageToDelete);
+
+            $this->imageRepository->delete($imageToDelete->id);
+
+            // lưu hình ảnh
+            $url = $this->saveImageAndGetUrl($request->input('images'));
+
+            // save to image table
+            $image = new Image();
+            $image->url = $url;
+            $image->book_id = $book->id;
+            $this->imageRepository->create([$image]);
+        }
     }
 }
