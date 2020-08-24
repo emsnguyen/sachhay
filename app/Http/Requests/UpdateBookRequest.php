@@ -29,7 +29,7 @@ class UpdateBookRequest extends FormRequest
             'isbn' => 'required|max:255|unique:books,id,:id',
             'publisher' => 'required|max:255',
             'review' => 'required|max:10000',
-            'images'=> 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            'images'=> 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ];
     }
 }

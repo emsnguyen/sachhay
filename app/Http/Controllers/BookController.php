@@ -42,19 +42,19 @@ class BookController extends Controller
             $book = $this->bookService->update($request, $id);
             return $this->sendResponse($book, "Book updated");
         } catch (\Exception $e) {
-            $this->sendError(\Exception::getMessage, "Book updated");
+            return $this->sendError(\Exception::getMessage, "Book updated");
         }
     }
 
     public function destroy($id)
     {
         $this->bookService->delete($id);
-        $this->sendResponse($id, 'Successfully deleted your book!');
+        return $this->sendResponse($id, 'Successfully deleted your book!');
     }
 
     public function search(Request $request)
     {
         $books = $this->bookService->search($request);
-        $this->sendResponse($books, "Searched successfully");
+        return $this->sendResponse($books, "Searched successfully");
     }
 }

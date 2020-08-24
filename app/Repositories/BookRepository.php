@@ -48,4 +48,12 @@ class BookRepository implements RepositoryInterface
             ->where('id', '=', $id)
             ->get()->first();
     }
+
+    public function search($query)
+    {
+        return Book::with('comments', 'ratings', 'images')
+            ->where('title', 'like', '%'.$query.'%')
+            ->orWhere('author', 'like', '%'.$query.'%')
+            ->get();
+    }
 }

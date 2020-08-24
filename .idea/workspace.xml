@@ -77,18 +77,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cc7f432d-24f4-41bf-af00-3cffd67b2420" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/UpdateUserRequest.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/APIController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/APIController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BookController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BookController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/CommentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/CommentController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/RatingController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/RatingController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Repositories/UserRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Repositories/UserRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Requests/UpdateBookRequest.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Requests/UpdateBookRequest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Repositories/BookRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Repositories/BookRepository.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Services/BookService.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Services/BookService.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Services/UserService.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Services/UserService.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -263,7 +256,9 @@
       <workItem from="1597897455706" duration="14106000" />
       <workItem from="1597937665669" duration="601000" />
       <workItem from="1598152331907" duration="5178000" />
-      <workItem from="1598169138631" duration="10228000" />
+      <workItem from="1598169138631" duration="10334000" />
+      <workItem from="1598232349318" duration="2122000" />
+      <workItem from="1598258107383" duration="2395000" />
     </task>
     <servers />
   </component>
@@ -322,9 +317,9 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="339" y="165" key="run.anything.popup/0.0.1366.738@0.0.1366.738" timestamp="1597909773873" />
-    <state x="346" y="59" width="672" height="678" key="search.everywhere.popup" timestamp="1598204329323">
+    <state x="346" y="59" width="672" height="678" key="search.everywhere.popup" timestamp="1598267133460">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="346" y="59" width="672" height="678" key="search.everywhere.popup/0.0.1366.738@0.0.1366.738" timestamp="1598204329323" />
+    <state x="346" y="59" width="672" height="678" key="search.everywhere.popup/0.0.1366.738@0.0.1366.738" timestamp="1598267133460" />
   </component>
 </project>

@@ -5,6 +5,7 @@ use App\Models\Book;
 use App\Models\Image;
 use App\Repositories\BookRepository;
 use App\Repositories\ImageRepository;
+use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -119,10 +120,8 @@ class BookService
 
     public function search(Request $request)
     {
-        $query = $request->q;
-        return Book::where('title', 'like', '%'.$query.'%')
-            ->orWhere('author', 'like', '%'.$query.'%')
-            ->get();
+        $query = $request->input('q');
+        return $this->bookRepository->search($query);
     }
 
     /**
